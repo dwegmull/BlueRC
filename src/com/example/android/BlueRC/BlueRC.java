@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.BluetoothChat;
+package com.example.android.BlueRC;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -30,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -43,7 +42,7 @@ import android.widget.Toast;
 /**
  * This is the main Activity that displays the current chat session.
  */
-public class BluetoothChat extends Activity {
+public class BlueRC extends Activity {
     // Debugging
     private static final String TAG = "BlueRC";
     private static final boolean D = true;
