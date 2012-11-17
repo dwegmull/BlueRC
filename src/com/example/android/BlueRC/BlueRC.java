@@ -204,7 +204,12 @@ public class BlueRC extends Activity {
         }
 
         // Check that there's actually something to send
-        if (message.length() > 0) {
+        if (message.length() > 0)
+        {
+            if(!message.contentEquals("$$$"))
+            {
+                message = message.concat("\n");
+            }
             // Get the message bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
             mChatService.write(send);
