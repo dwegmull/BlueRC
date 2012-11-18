@@ -40,17 +40,29 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-    >
+            android:layout_marginLeft="100dp"
+            android:layout_marginBottom="20dp"
+            >
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
         >
+            <android.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jbar"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    />
+
             <android.widget.RadioGroup
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:orientation="vertical"
-            >
+                    android:layout_gravity="center_horizontal"
+                    >
                 <RadioButton android:id="@+id/radio_forward"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
@@ -70,23 +82,40 @@
                              android:onClick="onRadioButtonClicked"
                  />
             </android.widget.RadioGroup>
+            <android.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cocks"
+                    android:layout_marginTop="50dp"
+                    android:layout_gravity="center_horizontal"
+                    />
             <android.widget.ToggleButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textOn="@string/cocksOn"
                     android:textOff="@string/cocksOff"
                     android:onClick="onToggleClicked"
-            />
+                    android:layout_gravity="center_horizontal"
+                    />
+            <android.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/whistle"
+                    android:layout_marginTop="50dp"
+                    android:layout_gravity="center_horizontal"
+                    />
             <android.widget.SeekBar
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBar_whistle"
-            />
+                    android:layout_gravity="center_horizontal"
+                    />
         </LinearLayout>
         <android.widget.VerticalSeekBar
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/seekBar_Throttle"
+                android:paddingTop="100dp"
                 />
     </LinearLayout>
     <android.widget.Button

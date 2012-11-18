@@ -29,12 +29,14 @@
     <string name="forward">Forward</string>
     <string name="stop">Stop</string>
     <string name="reverse">Reverse</string>
+    <string name="cocks">Drain Cocks</string>
     <string name="cocksOn">Opened</string>
     <string name="cocksOff">Closed</string>
     <string name="whistle">Whistle</string>
     <string name="emergency">Emergency Stop</string>
     <string name="connect">Connect</string>
     <string name="setup">Setup</string>
+    <string name="jbar">Johnson Bar</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">scanning for devices...</string>
