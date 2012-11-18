@@ -24,6 +24,17 @@
     <string name="title_connecting">connecting...</string>
     <string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string>
     <string name="title_not_connected">not connected</string>
+    <!-- Main UI elements -->
+    <string name="throttle">Throttle</string>
+    <string name="forward">Forward</string>
+    <string name="stop">Stop</string>
+    <string name="reverse">Reverse</string>
+    <string name="cocksOn">Opened</string>
+    <string name="cocksOff">Closed</string>
+    <string name="whistle">Whistle</string>
+    <string name="emergency">Emergency Stop</string>
+    <string name="connect">Connect</string>
+    <string name="setup">Setup</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">scanning for devices...</string>
@@ -35,7 +46,5 @@
     <string name="button_scan">Scan for devices</string>
 
     <!-- Options Menu -->
-    <string name="secure_connect">Connect a device - Secure</string>
-    <string name="insecure_connect">Connect a device - Insecure</string>
-    <string name="discoverable">Make discoverable</string>
+    <string name="insecure_connect">Connect a device</string>
 </resources>

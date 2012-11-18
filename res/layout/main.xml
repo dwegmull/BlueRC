@@ -18,29 +18,80 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
-    <ListView android:id="@+id/in"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
-        android:layout_weight="1"
-    />
+>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
-        <EditText android:id="@+id/edit_text_out"
-            android:layout_width="wrap_content"
+     >
+        <android.widget.Button
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="bottom"
-        />
-        <Button android:id="@+id/button_send"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send"
+            android:text="@string/connect"
         />
+        <android.widget.Button
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/setup"
+        />
+
     </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+        >
+            <android.widget.RadioGroup
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+            >
+                <RadioButton android:id="@+id/radio_forward"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="@string/forward"
+                             android:onClick="onRadioButtonClicked"
+                />
+                <RadioButton android:id="@+id/radio_stop"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="@string/stop"
+                             android:onClick="onRadioButtonClicked"
+                />
+                <RadioButton android:id="@+id/radio_reverse"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="@string/reverse"
+                             android:onClick="onRadioButtonClicked"
+                 />
+            </android.widget.RadioGroup>
+            <android.widget.ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOn="@string/cocksOn"
+                    android:textOff="@string/cocksOff"
+                    android:onClick="onToggleClicked"
+            />
+            <android.widget.SeekBar
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seekBar_whistle"
+            />
+        </LinearLayout>
+        <android.widget.VerticalSeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/seekBar_Throttle"
+                />
+    </LinearLayout>
+    <android.widget.Button
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/emergency"
+            />
 </LinearLayout>
