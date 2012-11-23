@@ -423,6 +423,9 @@ public class BluetoothChatService {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
+        // Buffer to store packets that may arrive over multiple BT transactions
+        private String mRxPacket = new String("");
+
 
         public ConnectedThread(BluetoothSocket socket, String socketType) {
             Log.d(TAG, "create ConnectedThread: " + socketType);
@@ -452,10 +455,32 @@ public class BluetoothChatService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-
-                    // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BlueRC.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    if(0 == mRxPacket.length())
+                    {
+                        if('#' == buffer[0])
+                        {
+                            mRxPacket = "#";
+                            int i;
+                            for(i = 1; i < bytes; i++)
+                            {
+                                mRxPacket += (char)buffer[i];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int i;
+                        for(i = 1; i < bytes; i++)
+                        {
+                            mRxPacket += (char)buffer[i];
+                        }
+                    }
+                    if(mRxPacket.contains("?"))
+                    {
+                        // We have a complete packet: send it to the UI
+                        mHandler.obtainMessage(BlueRC.MESSAGE_READ, bytes, -1, mRxPacket.getBytes()).sendToTarget();
+                        mRxPacket = "";
+                    }
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
@@ -472,6 +497,7 @@ public class BluetoothChatService {
          */
         public void write(byte[] buffer) {
             try {
+                mRxPacket = ""; // Empty the rx packet buffer, to clear any left overs from a past failed reception.
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity

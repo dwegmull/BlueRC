@@ -32,17 +32,82 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 /**
  * This is the main Activity that displays the current chat session.
  */
-public class BlueRC extends Activity {
+public class BlueRC extends Activity
+{
+    // Servo registers
+    public static final int  REG_THROTTLE    =    0;
+    public static final int  REG_REVERSE1    =    1;
+    public static final int  REG_REVERSE2    =    2;
+    public static final int  REG_DRAIN1      =    3;
+    public static final int  REG_DRAIN2      =    4;
+    public static final int  REG_WHISTLE     =    5;
+
+    // Calibration register offsets in the calibration string
+    public static final int  REG_EEPROM_VALID_HI =   6;
+    public static final int  REG_EEPROM_VALID_LO =   7;
+    public static final int  REG_FEATURES_HI     =   8;
+    public static final int  REG_FEATURES_LO     =   9;
+    public static final int  REG_LO_THROTTLE_HI  =   10;
+    public static final int  REG_LO_THROTTLE_LO  =   11;
+    public static final int  REG_HI_THROTTLE_HI  =   12;
+    public static final int  REG_HI_THROTTLE_LO  =   13;
+    public static final int  REG_LO_REVERSE1_HI  =   14;
+    public static final int  REG_LO_REVERSE1_LO  =   15;
+    public static final int  REG_MI_REVERSE1_HI  =   16;
+    public static final int  REG_MI_REVERSE1_LO  =   17;
+    public static final int  REG_HI_REVERSE1_HI  =   18;
+    public static final int  REG_HI_REVERSE1_LO  =   19;
+    public static final int  REG_LO_REVERSE2_HI  =   20;
+    public static final int  REG_LO_REVERSE2_LO  =   21;
+    public static final int  REG_MI_REVERSE2_HI  =   22;
+    public static final int  REG_MI_REVERSE2_LO  =   23;
+    public static final int  REG_HI_REVERSE2_HI  =   24;
+    public static final int  REG_HI_REVERSE2_LO  =   25;
+    public static final int  REG_LO_DRAIN1_HI    =   26;
+    public static final int  REG_LO_DRAIN1_LO    =   27;
+    public static final int  REG_HI_DRAIN1_HI    =   28;
+    public static final int  REG_HI_DRAIN1_LO    =   29;
+    public static final int  REG_LO_DRAIN2_HI    =   30;
+    public static final int  REG_LO_DRAIN2_LO    =   31;
+    public static final int  REG_HI_DRAIN2_HI    =   32;
+    public static final int  REG_HI_DRAIN2_LO    =   33;
+    public static final int  REG_LO_WHISTLE_HI   =   34;
+    public static final int  REG_LO_WHISTLE_LO   =   35;
+    public static final int  REG_HI_WHISTLE_HI   =   36;
+    public static final int  REG_HI_WHISTLE_LO   =   37;
+    public static final int  REG_DISC_TIMEOUT_HI =   38;
+    public static final int  REG_DISC_TIMEOUT_LO =   39;
+    public static final int  REG_VERSION_H_HI    =   40;
+    public static final int  REG_VERSION_H_LO    =   41;
+    public static final int  REG_VERSION_F_HI    =   42;
+    public static final int  REG_VERSION_F_LO    =   43;
+    public static final int  REG_VERSION_P_HI    =   44;
+    public static final int  REG_VERSION_P_LO    =   45;
+    public static final int  REG_SAFE_THROTTLE_HI =  46;
+    public static final int  REG_SAFE_THROTTLE_LO =  47;
+    public static final int  REG_SAFE_REVERSE1_HI =  48;
+    public static final int  REG_SAFE_REVERSE1_LO =  49;
+    public static final int  REG_SAFE_REVERSE2_HI =  50;
+    public static final int  REG_SAFE_REVERSE2_LO =  51;
+    public static final int  REG_SAFE_DRAIN1_HI   =  52;
+    public static final int  REG_SAFE_DRAIN1_LO   =  53;
+    public static final int  REG_SAFE_DRAIN2_HI   =  54;
+    public static final int  REG_SAFE_DRAIN2_LO   =  55;
+    public static final int  REG_SAFE_WHISTLE_HI  =  56;
+    public static final int  REG_SAFE_WHISTLE_LO  =  57;
+    public static final int  REG_DESC_SIZE_HI     =  58;
+    public static final int  REG_DESC_SIZE_LO     =  59;
+    public static final int  REG_DESCRIPTION_HI   =  60;
+    public static final int  REG_DESCRIPTION_LO   =  61;
+
+    // Message sent to the setup activity
+    public final static String EXTRA_MESSAGE = "com.example.android.BlueRC.MESSAGE";
+
     // Debugging
     private static final String TAG = "BlueRC";
     private static final boolean D = true;
@@ -64,20 +129,44 @@ public class BlueRC extends Activity {
     private static final int REQUEST_ENABLE_BT = 3;
 
     // Layout Views
-    private ListView mConversationView;
-    private EditText mOutEditText;
+    private SeekBar mThrottleBar;
+    private SeekBar mWhistleBar;
+
+//    private ListView mConversationView;
+//    private EditText mOutEditText;
 //    private Button mSendButton;
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
     // Array adapter for the conversation thread
-    private ArrayAdapter<String> mConversationArrayAdapter;
+//    private ArrayAdapter<String> mConversationArrayAdapter;
     // String buffer for outgoing messages
-    private StringBuffer mOutStringBuffer;
+//    private StringBuffer mOutStringBuffer;
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
     private BluetoothChatService mChatService = null;
+
+    // Calibration data stored inside the receiver's EEPROM.
+    private String mCalibrationData = new String("");
+
+    // Calibration values
+    private int mCalibThrottleLow = 70;
+    private int mCalibThrottleMid = 90;
+    private int mCalibThrottleHigh = 110;
+    private int mCalibReverse1Low = 70;
+    private int mCalibReverse1Mid = 90;
+    private int mCalibReverse1High = 110;
+    private int mCalibReverse2Low = 70;
+    private int mCalibReverse2Mid = 90;
+    private int mCalibReverse2High = 110;
+    private int mCalibDrain1Open = 70;
+    private int mCalibDrain1Closed = 110;
+    private int mCalibDrain2Open = 70;
+    private int mCalibDrain2Closed = 110;
+    private int mCalibWhistleOpen = 70;
+    private int mCalibWhistleClosed = 110;
+
 
 
     @Override
@@ -132,34 +221,16 @@ public class BlueRC extends Activity {
         }
     }
 
-    private void setupChat() {
+    private void setupChat()
+    {
         Log.d(TAG, "setupChat()");
 
-        // Initialize the array adapter for the conversation thread
-        mConversationArrayAdapter = new ArrayAdapter<String>(this, R.layout.message);
-     //   mConversationView = (ListView) findViewById(R.id.in);
-     //   mConversationView.setAdapter(mConversationArrayAdapter);
-
-        // Initialize the compose field with a listener for the return key
-     //   mOutEditText = (EditText) findViewById(R.id.edit_text_out);
-     //   mOutEditText.setOnEditorActionListener(mWriteListener);
-
-        // Initialize the send button with a listener that for click events
-     //   mSendButton = (Button) findViewById(R.id.button_send);
-//        mSendButton.setOnClickListener(new OnClickListener() {
-//            public void onClick(View v) {
-                // Send a message using content of the edit text widget
-     //           TextView view = (TextView) findViewById(R.id.edit_text_out);
-     //           String message = view.getText().toString();
-     //           sendMessage(message);
-//            }
-//        });
-
+        // Initialize the seek bar variables
+        mThrottleBar = (SeekBar) findViewById(R.id.seekBar_Throttle);
+        mWhistleBar = (SeekBar) findViewById(R.id.seekBar_whistle);
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(this, mHandler);
 
-        // Initialize the buffer for outgoing messages
-        mOutStringBuffer = new StringBuffer("");
     }
 
     @Override
@@ -182,6 +253,40 @@ public class BlueRC extends Activity {
         if(D) Log.e(TAG, "--- ON DESTROY ---");
     }
 
+    public int ascii2Digit(char c)
+    {
+        if((c < 0x40) && (c > 0x2F))
+        {
+            return (int)(c - 0x30);
+        }
+        if((c < 0x47) && (c > 0x40))
+        {
+            return (int)(c - 0x41 + 10);
+        }
+        return 0;
+    }
+
+    public int Calib2Value(int register)
+    {
+        char buff[] = new char[3];
+
+        mCalibrationData.getChars(register,register + 1, buff, 0);
+        return (ascii2Digit(buff[0]) << 4) + (ascii2Digit(buff[1]));
+    }
+
+    public String int2String(int value)
+    {
+        String s = new String();
+        if(16 > value)
+        {
+            s = "0"; // Place a leading 0 to ensure a constant length of two characters per HEX digit
+        }
+        s = Integer.toHexString((value & 0x00F0) >> 4);
+        s += Integer.toHexString(value & 0x000F);
+        return s;
+
+    }
+
     private void ensureDiscoverable() {
         if(D) Log.d(TAG, "ensure discoverable");
         if (mBluetoothAdapter.getScanMode() !=
@@ -196,7 +301,7 @@ public class BlueRC extends Activity {
      * Sends a message.
      * @param message  A string of text to send.
      */
-    private void sendMessage(String message) {
+    private void sendMessageRc(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
@@ -215,24 +320,11 @@ public class BlueRC extends Activity {
             mChatService.write(send);
 
             // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
+ //           mOutStringBuffer.setLength(0);
+ //           mOutEditText.setText(mOutStringBuffer);
         }
     }
 
-    // The action listener for the EditText widget, to listen for the return key
-    private TextView.OnEditorActionListener mWriteListener =
-        new TextView.OnEditorActionListener() {
-        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-            // If the action is a key-up event on the return key, send the message
-            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                String message = view.getText().toString();
-                sendMessage(message);
-            }
-            if(D) Log.i(TAG, "END onEditorAction");
-            return true;
-        }
-    };
 
     private final void setStatus(int resId) {
         final ActionBar actionBar = getActionBar();
@@ -250,6 +342,62 @@ public class BlueRC extends Activity {
         }
     }
 
+    // Decodes messages coming from the locomotive.
+    private void decodeMessages(String message)
+    {
+        if(message.contains("#A061A"))
+        {
+            // This message contains the calibration data
+            mCalibrationData = message;
+            if(0x42 == Calib2Value(REG_EEPROM_VALID_HI))
+            {
+                // This is valid calibration data: use it!
+                mCalibThrottleLow = Calib2Value(REG_LO_THROTTLE_HI);
+                mCalibThrottleHigh = Calib2Value(REG_HI_THROTTLE_HI);
+                mCalibReverse1Low = Calib2Value(REG_LO_REVERSE1_HI);
+                mCalibReverse1Mid = Calib2Value(REG_MI_REVERSE1_HI);
+                mCalibReverse1High = Calib2Value(REG_HI_REVERSE1_HI);
+                mCalibReverse2Low = Calib2Value(REG_LO_REVERSE2_HI);
+                mCalibReverse2Mid = Calib2Value(REG_MI_REVERSE2_HI);
+                mCalibReverse2High = Calib2Value(REG_HI_REVERSE2_HI);
+                mCalibDrain1Open = Calib2Value(REG_LO_DRAIN1_HI);
+                mCalibDrain1Closed = Calib2Value(REG_HI_DRAIN1_HI);
+                mCalibDrain2Open = Calib2Value(REG_LO_DRAIN2_HI);
+                mCalibDrain2Closed = Calib2Value(REG_HI_DRAIN2_HI);
+                mCalibWhistleOpen = Calib2Value(REG_LO_WHISTLE_HI);
+                mCalibWhistleClosed = Calib2Value(REG_HI_WHISTLE_HI);
+
+            }
+            else
+            {
+                // Invalid EEPROM data: use safe defaults.
+                mCalibThrottleLow = 70;
+                mCalibThrottleMid = 90;
+                mCalibThrottleHigh = 110;
+                mCalibReverse1Low = 70;
+                mCalibReverse1Mid = 90;
+                mCalibReverse1High = 110;
+                mCalibReverse2Low = 70;
+                mCalibReverse2Mid = 90;
+                mCalibReverse2High = 110;
+                mCalibDrain1Open = 70;
+                mCalibDrain1Closed = 110;
+                mCalibDrain2Open = 70;
+                mCalibDrain2Closed = 110;
+                mCalibWhistleOpen = 70;
+                mCalibWhistleClosed = 110;
+            }
+
+        }
+        if(message.contains("#N"))
+        {
+            // Let the user know we received a negative ack. Something is up!
+            message = message.concat(" error! ");
+            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
+
     // The Handler that gets information back from the BluetoothChatService
     private final Handler mHandler;
 
@@ -263,7 +411,10 @@ public class BlueRC extends Activity {
                         switch (msg.arg1) {
                             case BluetoothChatService.STATE_CONNECTED:
                                 setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                                mConversationArrayAdapter.clear();
+                                //mConversationArrayAdapter.clear();
+                                // Query the receiver for its calibration data
+                                mCalibrationData =  "@Q061A!";
+                                sendMessageRc(mCalibrationData);
                                 break;
                             case BluetoothChatService.STATE_CONNECTING:
                                 setStatus(R.string.title_connecting);
@@ -278,13 +429,14 @@ public class BlueRC extends Activity {
                         byte[] writeBuf = (byte[]) msg.obj;
                         // construct a string from the buffer
                         String writeMessage = new String(writeBuf);
-                        mConversationArrayAdapter.add("Me:  " + writeMessage);
+                        //mConversationArrayAdapter.add("Me:  " + writeMessage);
                         break;
                     case MESSAGE_READ:
                         byte[] readBuf = (byte[]) msg.obj;
                         // construct a string from the valid bytes in the buffer
                         String readMessage = new String(readBuf, 0, msg.arg1);
-                        mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                        decodeMessages(readMessage);
+                        //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                         break;
                     case MESSAGE_DEVICE_NAME:
                         // save the connected device's name
@@ -304,12 +456,6 @@ public class BlueRC extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(D) Log.d(TAG, "onActivityResult " + resultCode);
         switch (requestCode) {
-        case REQUEST_CONNECT_DEVICE_SECURE:
-            // When DeviceListActivity returns with a device to connect
-            if (resultCode == Activity.RESULT_OK) {
-                connectDevice(data, true);
-            }
-            break;
         case REQUEST_CONNECT_DEVICE_INSECURE:
             // When DeviceListActivity returns with a device to connect
             if (resultCode == Activity.RESULT_OK) {
@@ -352,12 +498,53 @@ public class BlueRC extends Activity {
         Intent serverIntent = null;
         switch (item.getItemId()) {
         case R.id.insecure_connect_scan:
-            // Launch the DeviceListActivity to see devices and do scan
-            serverIntent = new Intent(this, DeviceListActivity.class);
-            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
-            return true;
         }
         return false;
     }
 
+    public void OnConnectButtonClick(View view)
+    {
+        Intent serverIntent = null;
+        // Launch the DeviceListActivity to see devices and do scan
+        serverIntent = new Intent(this, DeviceListActivity.class);
+        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+    }
+    public void OnSetupButtonClick(View view)
+    {
+        // Launch the DeviceListActivity to see devices and do scan
+        Intent serverIntent = new Intent(this, setup.class);
+        serverIntent.putExtra(EXTRA_MESSAGE, mCalibrationData);
+        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+    }
+
+    public void OnSetReverserForward(View view)
+    {
+        // Send an update to the reverser servos
+        String message = new String();
+        message = "@C0102";
+        message = message.concat(int2String(mCalibReverse1Low));
+        message = message.concat(int2String(mCalibReverse2Low));
+        message = message.concat("!");
+        sendMessageRc(message);
+    }
+    public void OnSetReverserStop(View view)
+    {
+        // Send an update to the reverser servos
+        String message = new String();
+        message = "@C0102";
+        message = message.concat(int2String(mCalibReverse1Mid));
+        message = message.concat(int2String(mCalibReverse2Mid));
+        message = message.concat("!");
+        sendMessageRc(message);
+    }
+    public void OnSetReverserReverse(View view)
+    {
+        // Send an update to the reverser servos
+        String message = new String();
+        message = "@C0102";
+        message = message.concat(int2String(mCalibReverse1High));
+        message = message.concat(int2String(mCalibReverse2High));
+        message = message.concat("!");
+        sendMessageRc(message);
+    }
 }

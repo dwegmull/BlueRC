@@ -37,6 +37,15 @@
     <string name="connect">Connect</string>
     <string name="setup">Setup</string>
     <string name="jbar">Johnson Bar</string>
+    <string name="timeout">Timeout</string>
+    <string name="enabled">Enabled</string>
+    <string name="throttleFull">Fully Opened</string>
+    <string name="throttleMid">Mid travel</string>
+    <string name="throttleClosed">Closed</string>
+    <string name="reverse1">First Reverser</string>
+    <string name="reverse2">Second Reverser</string>
+    <string name="drain1">First Drain Cock</string>
+    <string name="drain2">Second Drain Cock</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">scanning for devices...</string>

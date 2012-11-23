@@ -24,15 +24,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
      >
-        <android.widget.Button
+        <android.widget.Button android:id="@+id/button_connect"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/connect"
+            android:onClick="OnConnectButtonClick"
         />
-        <android.widget.Button
+        <android.widget.Button android:id="@+id/button_setup"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/setup"
+                android:onClick="OnSetupButtonClick"
         />
 
     </LinearLayout>
@@ -67,19 +69,19 @@
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:text="@string/forward"
-                             android:onClick="onRadioButtonClicked"
+                             android:onClick="OnSetReverserForward"
                 />
                 <RadioButton android:id="@+id/radio_stop"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:text="@string/stop"
-                             android:onClick="onRadioButtonClicked"
+                             android:onClick="OnSetReverserStop"
                 />
                 <RadioButton android:id="@+id/radio_reverse"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:text="@string/reverse"
-                             android:onClick="onRadioButtonClicked"
+                             android:onClick="OnSetReverserReverse"
                  />
             </android.widget.RadioGroup>
             <android.widget.TextView
