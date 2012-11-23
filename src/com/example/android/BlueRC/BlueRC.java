@@ -169,7 +169,7 @@ public class BlueRC extends Activity
     private int mCalibWhistleOpen = 70;
     private int mCalibWhistleClosed = 110;
 
-
+    private boolean mWarnOnNoConnection = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -201,6 +201,8 @@ public class BlueRC extends Activity
                 progress = Calibrate(progress, mCalibThrottleLow, mCalibThrottleMid, mCalibThrottleHigh);
                 message = message.concat(int2String(progress));
                 message = message.concat("!");
+//                TextView debugText = (TextView) findViewById(R.id.text_whistle);
+//                debugText.setText(message.toCharArray(),0,message.length());
                 sendMessageRc(message);
             }
             public void onStartTrackingTouch(SeekBar seekBar)
@@ -226,8 +228,6 @@ public class BlueRC extends Activity
                 progress = Calibrate(progress, mCalibWhistleOpen, mCalibWhistleClosed);
                 message = message.concat(int2String(progress));
                 message = message.concat("!");
-                TextView debugText = (TextView) findViewById(R.id.text_whistle);
-                debugText.setText(message.toCharArray(),0,message.length());
                 sendMessageRc(message);
             }
             public void onStartTrackingTouch(SeekBar seekBar)
@@ -354,8 +354,7 @@ public class BlueRC extends Activity
 
     }
 
-    // Calibration for axes that have just an upper and lower limit
-    private int Calibrate(int value, int lowLimit, int highLimit)
+    private int doCalibration(int value, int lowLimit, int highLimit, int idealRange)
     {
         // Check for identical limits
         if(lowLimit == highLimit)
@@ -368,11 +367,18 @@ public class BlueRC extends Activity
             int temp = lowLimit;
             lowLimit = highLimit;
             highLimit = temp;
-            value = 180 - value;
+            value = idealRange - value;
         }
         int range = highLimit - lowLimit;
-        value = value / (180 / range);
-        return value + lowLimit;
+        float temp = (float) idealRange / (float) range;
+        temp = (float)value / temp;
+        return (int)temp + lowLimit;
+
+    }
+    // Calibration for axes that have just an upper and lower limit
+    private int Calibrate(int value, int lowLimit, int highLimit)
+    {
+        return doCalibration(value, lowLimit, highLimit, 180);
     }
 
     // Calibration for axes with a center value in addition to the lower and upper limits
@@ -386,12 +392,12 @@ public class BlueRC extends Activity
         if(value < 90)
         {
             // We need to produce a value between lowLimit and midLimit
-            return Calibrate(value, lowLimit, midLimit);
+            return doCalibration(value, lowLimit, midLimit, 90);
         }
         else
         {
             // We need to produce a value between midLimit and highLimit
-            return Calibrate(value, midLimit, highLimit);
+            return doCalibration(value - 90, midLimit, highLimit, 90);
         }
     }
 
@@ -402,9 +408,10 @@ public class BlueRC extends Activity
     private void sendMessageRc(String message)
     {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
+        if ((mChatService.getState() != BluetoothChatService.STATE_CONNECTED) && mWarnOnNoConnection)
         {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            mWarnOnNoConnection = false;
             return;
         }
 
@@ -517,7 +524,8 @@ public class BlueRC extends Activity
                         {
                             case BluetoothChatService.STATE_CONNECTED:
                                 setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                                //mConversationArrayAdapter.clear();
+                                // Get ready to warn the user once if the connection goes away.
+                                mWarnOnNoConnection = true;
                                 // Query the receiver for its calibration data
                                 mCalibrationData = "@Q061A!";
                                 sendMessageRc(mCalibrationData);
