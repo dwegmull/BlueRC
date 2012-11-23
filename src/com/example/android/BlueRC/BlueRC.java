@@ -34,6 +34,8 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
+import static android.widget.SeekBar.OnSeekBarChangeListener;
+
 /**
  * This is the main Activity that displays the current chat session.
  */
@@ -186,37 +188,97 @@ public class BlueRC extends Activity
             finish();
             return;
         }
-    }
+        mThrottleBar = (SeekBar) findViewById(R.id.seekBar_Throttle);
 
+        mThrottleBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+        {
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser)
+            {
+                // Build a packet based on the new throttle value.
+                String message = new String();
+                message = "@C0001";
+                progress = Calibrate(progress, mCalibThrottleLow, mCalibThrottleMid, mCalibThrottleHigh);
+                message = message.concat(int2String(progress));
+                message = message.concat("!");
+                sendMessageRc(message);
+            }
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
+                // TODO Auto-generated method stub
+            }
+        });
+        mWhistleBar = (SeekBar) findViewById(R.id.seekBar_whistle);
+
+        mWhistleBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+        {
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser)
+            {
+                // Build a packet based on the new whistle value.
+                String message = new String();
+                message = "@C0501";
+                progress = Calibrate(progress, mCalibWhistleOpen, mCalibWhistleClosed);
+                message = message.concat(int2String(progress));
+                message = message.concat("!");
+                TextView debugText = (TextView) findViewById(R.id.text_whistle);
+                debugText.setText(message.toCharArray(),0,message.length());
+                sendMessageRc(message);
+            }
+            public void onStartTrackingTouch(SeekBar seekBar)
+            {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar)
+            {
+                // TODO Auto-generated method stub
+            }
+        });
+
+
+    }
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
-        if(D) Log.e(TAG, "++ ON START ++");
+        if (D) Log.e(TAG, "++ ON START ++");
 
         // If BT is not on, request that it be enabled.
         // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
+        if (!mBluetoothAdapter.isEnabled())
+        {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-        // Otherwise, setup the chat session
-        } else {
+            // Otherwise, setup the chat session
+        }
+        else
+        {
             if (mChatService == null) setupChat();
         }
     }
 
     @Override
-    public synchronized void onResume() {
+    public synchronized void onResume()
+    {
         super.onResume();
-        if(D) Log.e(TAG, "+ ON RESUME +");
+        if (D) Log.e(TAG, "+ ON RESUME +");
 
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mChatService != null) {
+        if (mChatService != null)
+        {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
-              // Start the Bluetooth chat services
-              mChatService.start();
+            if (mChatService.getState() == BluetoothChatService.STATE_NONE)
+            {
+                // Start the Bluetooth chat services
+                mChatService.start();
             }
         }
     }
@@ -234,34 +296,38 @@ public class BlueRC extends Activity
     }
 
     @Override
-    public synchronized void onPause() {
+    public synchronized void onPause()
+    {
         super.onPause();
-        if(D) Log.e(TAG, "- ON PAUSE -");
+        if (D) Log.e(TAG, "- ON PAUSE -");
     }
 
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         super.onStop();
-        if(D) Log.e(TAG, "-- ON STOP --");
+        if (D) Log.e(TAG, "-- ON STOP --");
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         super.onDestroy();
         // Stop the Bluetooth chat services
         if (mChatService != null) mChatService.stop();
-        if(D) Log.e(TAG, "--- ON DESTROY ---");
+        if (D) Log.e(TAG, "--- ON DESTROY ---");
     }
+
 
     public int ascii2Digit(char c)
     {
-        if((c < 0x40) && (c > 0x2F))
+        if ((c < 0x40) && (c > 0x2F))
         {
-            return (int)(c - 0x30);
+            return (int) (c - 0x30);
         }
-        if((c < 0x47) && (c > 0x40))
+        if ((c < 0x47) && (c > 0x40))
         {
-            return (int)(c - 0x41 + 10);
+            return (int) (c - 0x41 + 10);
         }
         return 0;
     }
@@ -270,30 +336,62 @@ public class BlueRC extends Activity
     {
         char buff[] = new char[3];
 
-        mCalibrationData.getChars(register,register + 1, buff, 0);
+        mCalibrationData.getChars(register, register + 1, buff, 0);
         return (ascii2Digit(buff[0]) << 4) + (ascii2Digit(buff[1]));
     }
 
     public String int2String(int value)
     {
         String s = new String();
-        if(16 > value)
+        if (16 > value)
         {
             s = "0"; // Place a leading 0 to ensure a constant length of two characters per HEX digit
         }
         s = Integer.toHexString((value & 0x00F0) >> 4);
         s += Integer.toHexString(value & 0x000F);
+        s = s.toUpperCase();
         return s;
 
     }
 
-    private void ensureDiscoverable() {
-        if(D) Log.d(TAG, "ensure discoverable");
-        if (mBluetoothAdapter.getScanMode() !=
-            BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
-            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(discoverableIntent);
+    // Calibration for axes that have just an upper and lower limit
+    private int Calibrate(int value, int lowLimit, int highLimit)
+    {
+        // Check for identical limits
+        if(lowLimit == highLimit)
+        {
+            return lowLimit;
+        }
+        // Check if the range is inverted
+        if(lowLimit > highLimit)
+        {
+            int temp = lowLimit;
+            lowLimit = highLimit;
+            highLimit = temp;
+            value = 180 - value;
+        }
+        int range = highLimit - lowLimit;
+        value = value / (180 / range);
+        return value + lowLimit;
+    }
+
+    // Calibration for axes with a center value in addition to the lower and upper limits
+    private int Calibrate(int value, int lowLimit, int midLimit, int highLimit)
+    {
+        // Check which side of the center is the value on
+        if(value == 90)
+        {
+            return midLimit;
+        }
+        if(value < 90)
+        {
+            // We need to produce a value between lowLimit and midLimit
+            return Calibrate(value, lowLimit, midLimit);
+        }
+        else
+        {
+            // We need to produce a value between midLimit and highLimit
+            return Calibrate(value, midLimit, highLimit);
         }
     }
 
@@ -301,9 +399,11 @@ public class BlueRC extends Activity
      * Sends a message.
      * @param message  A string of text to send.
      */
-    private void sendMessageRc(String message) {
+    private void sendMessageRc(String message)
+    {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
+        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED)
+        {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -311,7 +411,7 @@ public class BlueRC extends Activity
         // Check that there's actually something to send
         if (message.length() > 0)
         {
-            if(!message.contentEquals("$$$"))
+            if (!message.contentEquals("$$$"))
             {
                 message = message.concat("\n");
             }
@@ -320,23 +420,25 @@ public class BlueRC extends Activity
             mChatService.write(send);
 
             // Reset out string buffer to zero and clear the edit text field
- //           mOutStringBuffer.setLength(0);
- //           mOutEditText.setText(mOutStringBuffer);
+            //           mOutStringBuffer.setLength(0);
+            //           mOutEditText.setText(mOutStringBuffer);
         }
     }
 
 
-    private final void setStatus(int resId) {
+    private final void setStatus(int resId)
+    {
         final ActionBar actionBar = getActionBar();
-        if(null != actionBar)
+        if (null != actionBar)
         {
             actionBar.setSubtitle(resId);
         }
     }
 
-    private final void setStatus(CharSequence subTitle) {
+    private final void setStatus(CharSequence subTitle)
+    {
         final ActionBar actionBar = getActionBar();
-        if(null != actionBar)
+        if (null != actionBar)
         {
             actionBar.setSubtitle(subTitle);
         }
@@ -345,11 +447,11 @@ public class BlueRC extends Activity
     // Decodes messages coming from the locomotive.
     private void decodeMessages(String message)
     {
-        if(message.contains("#A061A"))
+        if (message.contains("#A061A"))
         {
             // This message contains the calibration data
             mCalibrationData = message;
-            if(0x42 == Calib2Value(REG_EEPROM_VALID_HI))
+            if (0x42 == Calib2Value(REG_EEPROM_VALID_HI))
             {
                 // This is valid calibration data: use it!
                 mCalibThrottleLow = Calib2Value(REG_LO_THROTTLE_HI);
@@ -389,7 +491,7 @@ public class BlueRC extends Activity
             }
 
         }
-        if(message.contains("#N"))
+        if (message.contains("#N"))
         {
             // Let the user know we received a negative ack. Something is up!
             message = message.concat(" error! ");
@@ -402,18 +504,22 @@ public class BlueRC extends Activity
     private final Handler mHandler;
 
     {
-        mHandler = new Handler() {
+        mHandler = new Handler()
+        {
             @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
+            public void handleMessage(Message msg)
+            {
+                switch (msg.what)
+                {
                     case MESSAGE_STATE_CHANGE:
                         if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                        switch (msg.arg1) {
+                        switch (msg.arg1)
+                        {
                             case BluetoothChatService.STATE_CONNECTED:
                                 setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
                                 //mConversationArrayAdapter.clear();
                                 // Query the receiver for its calibration data
-                                mCalibrationData =  "@Q061A!";
+                                mCalibrationData = "@Q061A!";
                                 sendMessageRc(mCalibrationData);
                                 break;
                             case BluetoothChatService.STATE_CONNECTING:
@@ -453,53 +559,44 @@ public class BlueRC extends Activity
         };
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(D) Log.d(TAG, "onActivityResult " + resultCode);
-        switch (requestCode) {
-        case REQUEST_CONNECT_DEVICE_INSECURE:
-            // When DeviceListActivity returns with a device to connect
-            if (resultCode == Activity.RESULT_OK) {
-                connectDevice(data, false);
-            }
-            break;
-        case REQUEST_ENABLE_BT:
-            // When the request to enable Bluetooth returns
-            if (resultCode == Activity.RESULT_OK) {
-                // Bluetooth is now enabled, so set up a chat session
-                setupChat();
-            } else {
-                // User did not enable Bluetooth or an error occurred
-                Log.d(TAG, "BT not enabled");
-                Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-                finish();
-            }
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (D) Log.d(TAG, "onActivityResult " + resultCode);
+        switch (requestCode)
+        {
+            case REQUEST_CONNECT_DEVICE_INSECURE:
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    connectDevice(data, false);
+                }
+                break;
+            case REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    // Bluetooth is now enabled, so set up a chat session
+                    setupChat();
+                }
+                else
+                {
+                    // User did not enable Bluetooth or an error occurred
+                    Log.d(TAG, "BT not enabled");
+                    Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
         }
     }
 
-    private void connectDevice(Intent data, boolean secure) {
+    private void connectDevice(Intent data, boolean secure)
+    {
         // Get the device MAC address
         String address = data.getExtras()
-            .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         mChatService.connect(device, secure);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.option_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent serverIntent = null;
-        switch (item.getItemId()) {
-        case R.id.insecure_connect_scan:
-        }
-        return false;
     }
 
     public void OnConnectButtonClick(View view)
@@ -509,6 +606,7 @@ public class BlueRC extends Activity
         serverIntent = new Intent(this, DeviceListActivity.class);
         startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
     }
+
     public void OnSetupButtonClick(View view)
     {
         // Launch the DeviceListActivity to see devices and do scan
@@ -527,6 +625,7 @@ public class BlueRC extends Activity
         message = message.concat("!");
         sendMessageRc(message);
     }
+
     public void OnSetReverserStop(View view)
     {
         // Send an update to the reverser servos
@@ -537,6 +636,7 @@ public class BlueRC extends Activity
         message = message.concat("!");
         sendMessageRc(message);
     }
+
     public void OnSetReverserReverse(View view)
     {
         // Send an update to the reverser servos
@@ -544,6 +644,25 @@ public class BlueRC extends Activity
         message = "@C0102";
         message = message.concat(int2String(mCalibReverse1High));
         message = message.concat(int2String(mCalibReverse2High));
+        message = message.concat("!");
+        sendMessageRc(message);
+    }
+
+    public void OnDrainCocks(View view)
+    {
+        String message = new String();
+        message = "@C0302";
+        boolean on = ((ToggleButton) view).isChecked();
+        if (on)
+        {
+            message = message.concat(int2String(mCalibDrain1Open));
+            message = message.concat(int2String(mCalibDrain2Open));
+        }
+        else
+        {
+            message = message.concat(int2String(mCalibDrain1Closed));
+            message = message.concat(int2String(mCalibDrain2Closed));
+        }
         message = message.concat("!");
         sendMessageRc(message);
     }

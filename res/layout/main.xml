@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:textOn="@string/cocksOn"
                     android:textOff="@string/cocksOff"
-                    android:onClick="onToggleClicked"
+                    android:onClick="OnDrainCocks"
                     android:layout_gravity="center_horizontal"
                     />
             <android.widget.TextView
@@ -105,17 +105,20 @@
                     android:text="@string/whistle"
                     android:layout_marginTop="50dp"
                     android:layout_gravity="center_horizontal"
+                    android:id="@+id/text_whistle"
                     />
             <android.widget.SeekBar
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBar_whistle"
                     android:layout_gravity="center_horizontal"
+                    android:max="180"
                     />
         </LinearLayout>
         <android.widget.VerticalSeekBar
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:max="180"
                 android:id="@+id/seekBar_Throttle"
                 android:paddingTop="100dp"
                 />
