@@ -46,6 +46,7 @@
     <string name="reverse2">Second Reverser</string>
     <string name="drain1">First Drain Cock</string>
     <string name="drain2">Second Drain Cock</string>
+    <string name="loconame">Locomotive Name</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">scanning for devices...</string>

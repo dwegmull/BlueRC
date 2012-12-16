@@ -25,13 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
 import static android.widget.SeekBar.OnSeekBarChangeListener;
@@ -56,56 +50,58 @@ public class BlueRC extends Activity
     public static final int  REG_FEATURES_LO     =   9;
     public static final int  REG_LO_THROTTLE_HI  =   10;
     public static final int  REG_LO_THROTTLE_LO  =   11;
-    public static final int  REG_HI_THROTTLE_HI  =   12;
-    public static final int  REG_HI_THROTTLE_LO  =   13;
-    public static final int  REG_LO_REVERSE1_HI  =   14;
-    public static final int  REG_LO_REVERSE1_LO  =   15;
-    public static final int  REG_MI_REVERSE1_HI  =   16;
-    public static final int  REG_MI_REVERSE1_LO  =   17;
-    public static final int  REG_HI_REVERSE1_HI  =   18;
-    public static final int  REG_HI_REVERSE1_LO  =   19;
-    public static final int  REG_LO_REVERSE2_HI  =   20;
-    public static final int  REG_LO_REVERSE2_LO  =   21;
-    public static final int  REG_MI_REVERSE2_HI  =   22;
-    public static final int  REG_MI_REVERSE2_LO  =   23;
-    public static final int  REG_HI_REVERSE2_HI  =   24;
-    public static final int  REG_HI_REVERSE2_LO  =   25;
-    public static final int  REG_LO_DRAIN1_HI    =   26;
-    public static final int  REG_LO_DRAIN1_LO    =   27;
-    public static final int  REG_HI_DRAIN1_HI    =   28;
-    public static final int  REG_HI_DRAIN1_LO    =   29;
-    public static final int  REG_LO_DRAIN2_HI    =   30;
-    public static final int  REG_LO_DRAIN2_LO    =   31;
-    public static final int  REG_HI_DRAIN2_HI    =   32;
-    public static final int  REG_HI_DRAIN2_LO    =   33;
-    public static final int  REG_LO_WHISTLE_HI   =   34;
-    public static final int  REG_LO_WHISTLE_LO   =   35;
-    public static final int  REG_HI_WHISTLE_HI   =   36;
-    public static final int  REG_HI_WHISTLE_LO   =   37;
-    public static final int  REG_DISC_TIMEOUT_HI =   38;
-    public static final int  REG_DISC_TIMEOUT_LO =   39;
-    public static final int  REG_VERSION_H_HI    =   40;
-    public static final int  REG_VERSION_H_LO    =   41;
-    public static final int  REG_VERSION_F_HI    =   42;
-    public static final int  REG_VERSION_F_LO    =   43;
-    public static final int  REG_VERSION_P_HI    =   44;
-    public static final int  REG_VERSION_P_LO    =   45;
-    public static final int  REG_SAFE_THROTTLE_HI =  46;
-    public static final int  REG_SAFE_THROTTLE_LO =  47;
-    public static final int  REG_SAFE_REVERSE1_HI =  48;
-    public static final int  REG_SAFE_REVERSE1_LO =  49;
-    public static final int  REG_SAFE_REVERSE2_HI =  50;
-    public static final int  REG_SAFE_REVERSE2_LO =  51;
-    public static final int  REG_SAFE_DRAIN1_HI   =  52;
-    public static final int  REG_SAFE_DRAIN1_LO   =  53;
-    public static final int  REG_SAFE_DRAIN2_HI   =  54;
-    public static final int  REG_SAFE_DRAIN2_LO   =  55;
-    public static final int  REG_SAFE_WHISTLE_HI  =  56;
-    public static final int  REG_SAFE_WHISTLE_LO  =  57;
-    public static final int  REG_DESC_SIZE_HI     =  58;
-    public static final int  REG_DESC_SIZE_LO     =  59;
-    public static final int  REG_DESCRIPTION_HI   =  60;
-    public static final int  REG_DESCRIPTION_LO   =  61;
+    public static final int  REG_MI_THROTTLE_HI  =   12;
+    public static final int  REG_MI_THROTTLE_LO  =   13;
+    public static final int  REG_HI_THROTTLE_HI  =   14;
+    public static final int  REG_HI_THROTTLE_LO  =   15;
+    public static final int  REG_LO_REVERSE1_HI  =   16;
+    public static final int  REG_LO_REVERSE1_LO  =   17;
+    public static final int  REG_MI_REVERSE1_HI  =   18;
+    public static final int  REG_MI_REVERSE1_LO  =   19;
+    public static final int  REG_HI_REVERSE1_HI  =   20;
+    public static final int  REG_HI_REVERSE1_LO  =   21;
+    public static final int  REG_LO_REVERSE2_HI  =   22;
+    public static final int  REG_LO_REVERSE2_LO  =   23;
+    public static final int  REG_MI_REVERSE2_HI  =   24;
+    public static final int  REG_MI_REVERSE2_LO  =   25;
+    public static final int  REG_HI_REVERSE2_HI  =   26;
+    public static final int  REG_HI_REVERSE2_LO  =   27;
+    public static final int  REG_LO_DRAIN1_HI    =   28;
+    public static final int  REG_LO_DRAIN1_LO    =   29;
+    public static final int  REG_HI_DRAIN1_HI    =   30;
+    public static final int  REG_HI_DRAIN1_LO    =   31;
+    public static final int  REG_LO_DRAIN2_HI    =   32;
+    public static final int  REG_LO_DRAIN2_LO    =   33;
+    public static final int  REG_HI_DRAIN2_HI    =   34;
+    public static final int  REG_HI_DRAIN2_LO    =   35;
+    public static final int  REG_LO_WHISTLE_HI   =   36;
+    public static final int  REG_LO_WHISTLE_LO   =   37;
+    public static final int  REG_HI_WHISTLE_HI   =   38;
+    public static final int  REG_HI_WHISTLE_LO   =   39;
+    public static final int  REG_DISC_TIMEOUT_HI =   40;
+    public static final int  REG_DISC_TIMEOUT_LO =   41;
+    public static final int  REG_VERSION_H_HI    =   42;
+    public static final int  REG_VERSION_H_LO    =   43;
+    public static final int  REG_VERSION_F_HI    =   44;
+    public static final int  REG_VERSION_F_LO    =   45;
+    public static final int  REG_VERSION_P_HI    =   46;
+    public static final int  REG_VERSION_P_LO    =   47;
+    public static final int  REG_SAFE_THROTTLE_HI =  48;
+    public static final int  REG_SAFE_THROTTLE_LO =  49;
+    public static final int  REG_SAFE_REVERSE1_HI =  50;
+    public static final int  REG_SAFE_REVERSE1_LO =  51;
+    public static final int  REG_SAFE_REVERSE2_HI =  52;
+    public static final int  REG_SAFE_REVERSE2_LO =  53;
+    public static final int  REG_SAFE_DRAIN1_HI   =  54;
+    public static final int  REG_SAFE_DRAIN1_LO   =  55;
+    public static final int  REG_SAFE_DRAIN2_HI   =  56;
+    public static final int  REG_SAFE_DRAIN2_LO   =  57;
+    public static final int  REG_SAFE_WHISTLE_HI  =  58;
+    public static final int  REG_SAFE_WHISTLE_LO  =  59;
+    public static final int  REG_DESC_SIZE_HI     =  60;
+    public static final int  REG_DESC_SIZE_LO     =  61;
+    public static final int  REG_DESCRIPTION_HI   =  62;
+    public static final int  REG_DESCRIPTION_LO   =  63;
 
     // Message sent to the setup activity
     public final static String EXTRA_MESSAGE = "com.example.android.BlueRC.MESSAGE";
@@ -126,7 +122,7 @@ public class BlueRC extends Activity
     public static final String TOAST = "toast";
 
     // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int SAVE_SETUP = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
@@ -134,23 +130,17 @@ public class BlueRC extends Activity
     private SeekBar mThrottleBar;
     private SeekBar mWhistleBar;
 
-//    private ListView mConversationView;
-//    private EditText mOutEditText;
-//    private Button mSendButton;
-
     // Name of the connected device
     private String mConnectedDeviceName = null;
-    // Array adapter for the conversation thread
-//    private ArrayAdapter<String> mConversationArrayAdapter;
-    // String buffer for outgoing messages
-//    private StringBuffer mOutStringBuffer;
+
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
+
     // Member object for the chat services
     private BluetoothChatService mChatService = null;
 
     // Calibration data stored inside the receiver's EEPROM.
-    private String mCalibrationData = new String("");
+    private static String mCalibrationData = new String("");
 
     // Calibration values
     private int mCalibThrottleLow = 70;
@@ -168,6 +158,18 @@ public class BlueRC extends Activity
     private int mCalibDrain2Closed = 110;
     private int mCalibWhistleOpen = 70;
     private int mCalibWhistleClosed = 110;
+
+    // Other EEPROM registers
+    private int mEEPROMValid = 0x42;
+    private int mFeatures = 0x00;
+
+    // Safe Values
+    private int mSafeThrottle = mCalibThrottleLow;
+    private int mSafeReverse1 = mCalibReverse1Mid;
+    private int mSafeReverse2 = mCalibReverse2Mid;
+    private int mSafeDrain1 = mCalibDrain1Open;
+    private int mSafeDrain2 = mCalibDrain2Open;
+    private int mSafeWhistle = mCalibWhistleClosed;
 
     private boolean mWarnOnNoConnection = true;
 
@@ -255,7 +257,6 @@ public class BlueRC extends Activity
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-            // Otherwise, setup the chat session
         }
         else
         {
@@ -319,7 +320,7 @@ public class BlueRC extends Activity
     }
 
 
-    public int ascii2Digit(char c)
+    public static int ascii2Digit(char c)
     {
         if ((c < 0x40) && (c > 0x2F))
         {
@@ -332,7 +333,7 @@ public class BlueRC extends Activity
         return 0;
     }
 
-    public int Calib2Value(int register)
+    public static int calib2Value(int register)
     {
         char buff[] = new char[3];
 
@@ -451,30 +452,56 @@ public class BlueRC extends Activity
         }
     }
 
+    private void buildCalibrationString()
+    {
+        String message = new String();
+        mEEPROMValid = 0x42;
+        message = "@C061B";
+        message = message.concat(int2String(mEEPROMValid));
+        message = message.concat(int2String(mFeatures));
+        message = message.concat(int2String(mCalibThrottleLow));
+        message = message.concat(int2String(mCalibThrottleMid));
+        message = message.concat(int2String(mCalibThrottleHigh));
+        message = message.concat(int2String(mCalibReverse1Low));
+        message = message.concat(int2String(mCalibReverse1Mid));
+        message = message.concat(int2String(mCalibReverse1High));
+        message = message.concat(int2String(mCalibReverse2Low));
+        message = message.concat(int2String(mCalibReverse2Mid));
+        message = message.concat(int2String(mCalibReverse2High));
+        message = message.concat(int2String(mCalibDrain1Open));
+        message = message.concat(int2String(mCalibDrain1Closed));
+        message = message.concat(int2String(mCalibDrain2Open));
+        message = message.concat(int2String(mCalibDrain2Closed));
+        message = message.concat(int2String(mCalibWhistleOpen));
+        message = message.concat(int2String(mCalibWhistleClosed));
+        mCalibrationData = message;
+    }
+
     // Decodes messages coming from the locomotive.
     private void decodeMessages(String message)
     {
-        if (message.contains("#A061A"))
+        if (message.contains("#A061B"))
         {
             // This message contains the calibration data
             mCalibrationData = message;
-            if (0x42 == Calib2Value(REG_EEPROM_VALID_HI))
+            if (0x42 == calib2Value(REG_EEPROM_VALID_HI))
             {
                 // This is valid calibration data: use it!
-                mCalibThrottleLow = Calib2Value(REG_LO_THROTTLE_HI);
-                mCalibThrottleHigh = Calib2Value(REG_HI_THROTTLE_HI);
-                mCalibReverse1Low = Calib2Value(REG_LO_REVERSE1_HI);
-                mCalibReverse1Mid = Calib2Value(REG_MI_REVERSE1_HI);
-                mCalibReverse1High = Calib2Value(REG_HI_REVERSE1_HI);
-                mCalibReverse2Low = Calib2Value(REG_LO_REVERSE2_HI);
-                mCalibReverse2Mid = Calib2Value(REG_MI_REVERSE2_HI);
-                mCalibReverse2High = Calib2Value(REG_HI_REVERSE2_HI);
-                mCalibDrain1Open = Calib2Value(REG_LO_DRAIN1_HI);
-                mCalibDrain1Closed = Calib2Value(REG_HI_DRAIN1_HI);
-                mCalibDrain2Open = Calib2Value(REG_LO_DRAIN2_HI);
-                mCalibDrain2Closed = Calib2Value(REG_HI_DRAIN2_HI);
-                mCalibWhistleOpen = Calib2Value(REG_LO_WHISTLE_HI);
-                mCalibWhistleClosed = Calib2Value(REG_HI_WHISTLE_HI);
+                mCalibThrottleLow = calib2Value(REG_LO_THROTTLE_HI);
+                mCalibThrottleMid = calib2Value(REG_MI_THROTTLE_HI);
+                mCalibThrottleHigh = calib2Value(REG_HI_THROTTLE_HI);
+                mCalibReverse1Low = calib2Value(REG_LO_REVERSE1_HI);
+                mCalibReverse1Mid = calib2Value(REG_MI_REVERSE1_HI);
+                mCalibReverse1High = calib2Value(REG_HI_REVERSE1_HI);
+                mCalibReverse2Low = calib2Value(REG_LO_REVERSE2_HI);
+                mCalibReverse2Mid = calib2Value(REG_MI_REVERSE2_HI);
+                mCalibReverse2High = calib2Value(REG_HI_REVERSE2_HI);
+                mCalibDrain1Open = calib2Value(REG_LO_DRAIN1_HI);
+                mCalibDrain1Closed = calib2Value(REG_HI_DRAIN1_HI);
+                mCalibDrain2Open = calib2Value(REG_LO_DRAIN2_HI);
+                mCalibDrain2Closed = calib2Value(REG_HI_DRAIN2_HI);
+                mCalibWhistleOpen = calib2Value(REG_LO_WHISTLE_HI);
+                mCalibWhistleClosed = calib2Value(REG_HI_WHISTLE_HI);
 
             }
             else
@@ -593,6 +620,14 @@ public class BlueRC extends Activity
                     Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                     finish();
                 }
+            case SAVE_SETUP:
+                // Save the calibration data to the device's EEPROM.
+                String message = new String();
+                message = data.getStringExtra(EXTRA_MESSAGE);
+                // Transform the received packet into one ready to be sent
+                message = message.replace("#A","@C");
+                message = message.replace("?","!");
+                sendMessageRc(message);
         }
     }
 
@@ -620,7 +655,7 @@ public class BlueRC extends Activity
         // Launch the DeviceListActivity to see devices and do scan
         Intent serverIntent = new Intent(this, setup.class);
         serverIntent.putExtra(EXTRA_MESSAGE, mCalibrationData);
-        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+        startActivityForResult(serverIntent, SAVE_SETUP);
     }
 
     public void OnSetReverserForward(View view)
