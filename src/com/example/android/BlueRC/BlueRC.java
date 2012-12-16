@@ -143,39 +143,64 @@ public class BlueRC extends Activity
     private static String mCalibrationData = new String("");
 
     // Calibration values
-    private int mCalibThrottleLow = 70;
-    private int mCalibThrottleMid = 90;
-    private int mCalibThrottleHigh = 110;
-    private int mCalibReverse1Low = 70;
-    private int mCalibReverse1Mid = 90;
-    private int mCalibReverse1High = 110;
-    private int mCalibReverse2Low = 70;
-    private int mCalibReverse2Mid = 90;
-    private int mCalibReverse2High = 110;
-    private int mCalibDrain1Open = 70;
-    private int mCalibDrain1Closed = 110;
-    private int mCalibDrain2Open = 70;
-    private int mCalibDrain2Closed = 110;
-    private int mCalibWhistleOpen = 70;
-    private int mCalibWhistleClosed = 110;
+    private int mCalibValues[] = new int[15];
+    public static final int CALIB_THROTTLE_LOW = 0;
+    public static final int CALIB_THROTTLE_MID = 1;
+    public static final int CALIB_THROTTLE_HI = 2;
+    public static final int CALIB_REVERSE1_LOW = 3;
+    public static final int CALIB_REVERSE1_MID = 4;
+    public static final int CALIB_REVERSE1_HI = 5;
+    public static final int CALIB_REVERSE2_LOW = 6;
+    public static final int CALIB_REVERSE2_MID = 7;
+    public static final int CALIB_REVERSE2_HI = 8;
+    public static final int CALIB_DRAIN1_LOW = 9;
+    public static final int CALIB_DRAIN1_HI = 10;
+    public static final int CALIB_DRAIN2_LOW = 11;
+    public static final int CALIB_DRAIN2_HI = 12;
+    public static final int CALIB_WHISTLE_LOW = 13;
+    public static final int CALIB_WHISTLE_HI = 14;
 
     // Other EEPROM registers
     private int mEEPROMValid = 0x42;
     private int mFeatures = 0x00;
 
     // Safe Values
-    private int mSafeThrottle = mCalibThrottleLow;
-    private int mSafeReverse1 = mCalibReverse1Mid;
-    private int mSafeReverse2 = mCalibReverse2Mid;
-    private int mSafeDrain1 = mCalibDrain1Open;
-    private int mSafeDrain2 = mCalibDrain2Open;
-    private int mSafeWhistle = mCalibWhistleClosed;
+    private int mSafeThrottle;
+    private int mSafeReverse1;
+    private int mSafeReverse2;
+    private int mSafeDrain1;
+    private int mSafeDrain2;
+    private int mSafeWhistle;
+    private String mSafeData = new String();
 
     private boolean mWarnOnNoConnection = true;
+
+    private void default_calibration()
+    {
+        mCalibValues[0] = 70;
+        mCalibValues[1] = 90;
+        mCalibValues[2] = 110;
+        mCalibValues[3] = 70;
+        mCalibValues[4] = 90;
+        mCalibValues[5] = 110;
+        mCalibValues[6] = 70;
+        mCalibValues[7] = 90;
+        mCalibValues[8] = 110;
+        mCalibValues[9] = 70;
+        mCalibValues[10] = 110;
+        mCalibValues[11] = 70;
+        mCalibValues[12] = 110;
+        mCalibValues[13] = 70;
+        mCalibValues[15] = 110;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initial values for calibration
+        default_calibration();
+
         if(D) Log.e(TAG, "+++ ON CREATE +++");
 
         // Set up the window layout
@@ -200,7 +225,7 @@ public class BlueRC extends Activity
                 // Build a packet based on the new throttle value.
                 String message = new String();
                 message = "@C0001";
-                progress = Calibrate(progress, mCalibThrottleLow, mCalibThrottleMid, mCalibThrottleHigh);
+                progress = Calibrate(progress, mCalibValues[CALIB_THROTTLE_LOW], mCalibValues[CALIB_THROTTLE_MID], mCalibValues[CALIB_THROTTLE_HI]);
                 message = message.concat(int2String(progress));
                 message = message.concat("!");
 //                TextView debugText = (TextView) findViewById(R.id.text_whistle);
@@ -227,7 +252,7 @@ public class BlueRC extends Activity
                 // Build a packet based on the new whistle value.
                 String message = new String();
                 message = "@C0501";
-                progress = Calibrate(progress, mCalibWhistleOpen, mCalibWhistleClosed);
+                progress = Calibrate(progress, mCalibValues[CALIB_WHISTLE_LOW], mCalibValues[CALIB_WHISTLE_HI]);
                 message = message.concat(int2String(progress));
                 message = message.concat("!");
                 sendMessageRc(message);
@@ -456,81 +481,90 @@ public class BlueRC extends Activity
     {
         String message = new String();
         mEEPROMValid = 0x42;
-        message = "@C061B";
+        message = "@C0611";
         message = message.concat(int2String(mEEPROMValid));
         message = message.concat(int2String(mFeatures));
-        message = message.concat(int2String(mCalibThrottleLow));
-        message = message.concat(int2String(mCalibThrottleMid));
-        message = message.concat(int2String(mCalibThrottleHigh));
-        message = message.concat(int2String(mCalibReverse1Low));
-        message = message.concat(int2String(mCalibReverse1Mid));
-        message = message.concat(int2String(mCalibReverse1High));
-        message = message.concat(int2String(mCalibReverse2Low));
-        message = message.concat(int2String(mCalibReverse2Mid));
-        message = message.concat(int2String(mCalibReverse2High));
-        message = message.concat(int2String(mCalibDrain1Open));
-        message = message.concat(int2String(mCalibDrain1Closed));
-        message = message.concat(int2String(mCalibDrain2Open));
-        message = message.concat(int2String(mCalibDrain2Closed));
-        message = message.concat(int2String(mCalibWhistleOpen));
-        message = message.concat(int2String(mCalibWhistleClosed));
+        int loopCt;
+        for(loopCt = 0; loopCt < 15; loopCt++)
+        {
+            message = message.concat(int2String(mCalibValues[loopCt]));
+        }
         mCalibrationData = message;
+    }
+
+    private void buildSafeString()
+    {
+        String message = new String();
+        message = "@C1B06";
+        message = message.concat(int2String(mSafeThrottle));
+        message = message.concat(int2String(mSafeReverse1));
+        message = message.concat(int2String(mSafeReverse2));
+        message = message.concat(int2String(mSafeDrain1));
+        message = message.concat(int2String(mSafeDrain2));
+        message = message.concat(int2String(mSafeWhistle));
+        mSafeData = message;
     }
 
     // Decodes messages coming from the locomotive.
     private void decodeMessages(String message)
     {
-        if (message.contains("#A061B"))
+        if (message.contains("#A0611"))
         {
             // This message contains the calibration data
             mCalibrationData = message;
             if (0x42 == calib2Value(REG_EEPROM_VALID_HI))
             {
                 // This is valid calibration data: use it!
-                mCalibThrottleLow = calib2Value(REG_LO_THROTTLE_HI);
-                mCalibThrottleMid = calib2Value(REG_MI_THROTTLE_HI);
-                mCalibThrottleHigh = calib2Value(REG_HI_THROTTLE_HI);
-                mCalibReverse1Low = calib2Value(REG_LO_REVERSE1_HI);
-                mCalibReverse1Mid = calib2Value(REG_MI_REVERSE1_HI);
-                mCalibReverse1High = calib2Value(REG_HI_REVERSE1_HI);
-                mCalibReverse2Low = calib2Value(REG_LO_REVERSE2_HI);
-                mCalibReverse2Mid = calib2Value(REG_MI_REVERSE2_HI);
-                mCalibReverse2High = calib2Value(REG_HI_REVERSE2_HI);
-                mCalibDrain1Open = calib2Value(REG_LO_DRAIN1_HI);
-                mCalibDrain1Closed = calib2Value(REG_HI_DRAIN1_HI);
-                mCalibDrain2Open = calib2Value(REG_LO_DRAIN2_HI);
-                mCalibDrain2Closed = calib2Value(REG_HI_DRAIN2_HI);
-                mCalibWhistleOpen = calib2Value(REG_LO_WHISTLE_HI);
-                mCalibWhistleClosed = calib2Value(REG_HI_WHISTLE_HI);
+                mEEPROMValid = 0x42;
+                int loopCt;
+                for(loopCt = 0; loopCt < 15; loopCt++)
+                {
+                    mCalibValues[loopCt] = calib2Value((loopCt * 2) + 10);
+                }
 
             }
             else
             {
                 // Invalid EEPROM data: use safe defaults.
-                mCalibThrottleLow = 70;
-                mCalibThrottleMid = 90;
-                mCalibThrottleHigh = 110;
-                mCalibReverse1Low = 70;
-                mCalibReverse1Mid = 90;
-                mCalibReverse1High = 110;
-                mCalibReverse2Low = 70;
-                mCalibReverse2Mid = 90;
-                mCalibReverse2High = 110;
-                mCalibDrain1Open = 70;
-                mCalibDrain1Closed = 110;
-                mCalibDrain2Open = 70;
-                mCalibDrain2Closed = 110;
-                mCalibWhistleOpen = 70;
-                mCalibWhistleClosed = 110;
+                mEEPROMValid = 0;
+                default_calibration();
+                buildCalibrationString();
             }
 
         }
+
         if (message.contains("#N"))
         {
             // Let the user know we received a negative ack. Something is up!
             message = message.concat(" error! ");
             Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
             toast.show();
+        }
+
+        if(message.contains("#A1B06"))
+        {
+            // This message contains the safe values
+            // only trust them if the EEPROM is valid
+            if(0x42 == mEEPROMValid)
+            {
+                mSafeThrottle = calib2Value(REG_SAFE_THROTTLE_HI);
+                mSafeReverse1 = calib2Value(REG_SAFE_REVERSE1_HI);
+                mSafeReverse2 = calib2Value(REG_SAFE_REVERSE2_HI);
+                mSafeDrain1 = calib2Value(REG_SAFE_DRAIN1_HI);
+                mSafeDrain2 = calib2Value(REG_SAFE_DRAIN2_HI);
+                mSafeWhistle = calib2Value(REG_SAFE_WHISTLE_HI);
+            }
+            else
+            {
+                // Use defaults
+                mSafeThrottle = mCalibValues[CALIB_THROTTLE_LOW];
+                mSafeReverse1 = mCalibValues[CALIB_REVERSE1_MID];
+                mSafeReverse2 = mCalibValues[CALIB_REVERSE2_MID];
+                mSafeDrain1 = mCalibValues[CALIB_DRAIN1_HI];
+                mSafeDrain2 = mCalibValues[CALIB_DRAIN2_HI];
+                mSafeWhistle = mCalibValues[CALIB_WHISTLE_LOW];
+            }
+            buildSafeString();
         }
     }
 
@@ -554,8 +588,9 @@ public class BlueRC extends Activity
                                 // Get ready to warn the user once if the connection goes away.
                                 mWarnOnNoConnection = true;
                                 // Query the receiver for its calibration data
-                                mCalibrationData = "@Q061A!";
-                                sendMessageRc(mCalibrationData);
+                                sendMessageRc("@Q0611!");
+                                // Query the receiver for its safe data
+                                sendMessageRc("@Q1B06");
                                 break;
                             case BluetoothChatService.STATE_CONNECTING:
                                 setStatus(R.string.title_connecting);
@@ -663,8 +698,8 @@ public class BlueRC extends Activity
         // Send an update to the reverser servos
         String message = new String();
         message = "@C0102";
-        message = message.concat(int2String(mCalibReverse1Low));
-        message = message.concat(int2String(mCalibReverse2Low));
+        message = message.concat(int2String(mCalibValues[CALIB_REVERSE1_LOW]));
+        message = message.concat(int2String(mCalibValues[CALIB_REVERSE2_LOW]));
         message = message.concat("!");
         sendMessageRc(message);
     }
@@ -674,8 +709,8 @@ public class BlueRC extends Activity
         // Send an update to the reverser servos
         String message = new String();
         message = "@C0102";
-        message = message.concat(int2String(mCalibReverse1Mid));
-        message = message.concat(int2String(mCalibReverse2Mid));
+        message = message.concat(int2String(mCalibValues[CALIB_REVERSE1_MID]));
+        message = message.concat(int2String(mCalibValues[CALIB_REVERSE2_MID]));
         message = message.concat("!");
         sendMessageRc(message);
     }
@@ -685,8 +720,8 @@ public class BlueRC extends Activity
         // Send an update to the reverser servos
         String message = new String();
         message = "@C0102";
-        message = message.concat(int2String(mCalibReverse1High));
-        message = message.concat(int2String(mCalibReverse2High));
+        message = message.concat(int2String(mCalibValues[CALIB_REVERSE1_HI]));
+        message = message.concat(int2String(mCalibValues[CALIB_REVERSE2_HI]));
         message = message.concat("!");
         sendMessageRc(message);
     }
@@ -698,13 +733,13 @@ public class BlueRC extends Activity
         boolean on = ((ToggleButton) view).isChecked();
         if (on)
         {
-            message = message.concat(int2String(mCalibDrain1Open));
-            message = message.concat(int2String(mCalibDrain2Open));
+            message = message.concat(int2String(mCalibValues[CALIB_DRAIN1_HI]));
+            message = message.concat(int2String(mCalibValues[CALIB_DRAIN2_HI]));
         }
         else
         {
-            message = message.concat(int2String(mCalibDrain1Closed));
-            message = message.concat(int2String(mCalibDrain2Closed));
+            message = message.concat(int2String(mCalibValues[CALIB_DRAIN1_LOW]));
+            message = message.concat(int2String(mCalibValues[CALIB_DRAIN2_LOW]));
         }
         message = message.concat("!");
         sendMessageRc(message);
