@@ -28,6 +28,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
+import java.util.AbstractQueue;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import static android.widget.SeekBar.OnSeekBarChangeListener;
 
 /**
@@ -48,6 +52,13 @@ public class BlueRC extends Activity
     public static final int  REG_EEPROM_VALID_LO =   7;
     public static final int  REG_FEATURES_HI     =   8;
     public static final int  REG_FEATURES_LO     =   9;
+    public static final int  FEATURES_THROTTLE   =   0x01;
+    public static final int  FEATURES_REVERSE1   =   0x02;
+    public static final int  FEATURES_REVERSE2   =   0x04;
+    public static final int  FEATURES_DRAIN1     =   0x08;
+    public static final int  FEATURES_DRAIN2     =   0x10;
+    public static final int  FEATURES_WHISTLE    =   0x20;
+
     public static final int  REG_LO_THROTTLE_HI  =   10;
     public static final int  REG_LO_THROTTLE_LO  =   11;
     public static final int  REG_MI_THROTTLE_HI  =   12;
@@ -143,7 +154,7 @@ public class BlueRC extends Activity
     private static String mCalibrationData = new String("");
 
     // Calibration values
-    private int mCalibValues[] = new int[15];
+    public int mCalibValues[] = new int[15];
     public static final int CALIB_THROTTLE_LOW = 0;
     public static final int CALIB_THROTTLE_MID = 1;
     public static final int CALIB_THROTTLE_HI = 2;
@@ -161,8 +172,8 @@ public class BlueRC extends Activity
     public static final int CALIB_WHISTLE_HI = 14;
 
     // Other EEPROM registers
-    private int mEEPROMValid = 0x42;
-    private int mFeatures = 0x00;
+    public int mEEPROMValid = 0x42;
+    public int mFeatures = 0x00;
 
     // Safe Values
     private int mSafeThrottle;
@@ -174,6 +185,11 @@ public class BlueRC extends Activity
     private String mSafeData = new String();
 
     private boolean mWarnOnNoConnection = true;
+    private boolean mWaitingForAck = false;
+
+    // Locomotive name
+    public String mLocomotiveName = new String();
+    public int mNameLength;
 
     private void default_calibration()
     {
@@ -191,20 +207,24 @@ public class BlueRC extends Activity
         mCalibValues[11] = 70;
         mCalibValues[12] = 110;
         mCalibValues[13] = 70;
-        mCalibValues[15] = 110;
+        mCalibValues[14] = 110;
     }
+
+    // Message queue
+    private LinkedList<String> mTxQueue = new LinkedList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initial values for calibration
-        default_calibration();
 
         if(D) Log.e(TAG, "+++ ON CREATE +++");
 
         // Set up the window layout
         setContentView(R.layout.main);
+
+        // Initial values for calibration
+        default_calibration();
 
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -228,8 +248,6 @@ public class BlueRC extends Activity
                 progress = Calibrate(progress, mCalibValues[CALIB_THROTTLE_LOW], mCalibValues[CALIB_THROTTLE_MID], mCalibValues[CALIB_THROTTLE_HI]);
                 message = message.concat(int2String(progress));
                 message = message.concat("!");
-//                TextView debugText = (TextView) findViewById(R.id.text_whistle);
-//                debugText.setText(message.toCharArray(),0,message.length());
                 sendMessageRc(message);
             }
             public void onStartTrackingTouch(SeekBar seekBar)
@@ -277,7 +295,7 @@ public class BlueRC extends Activity
         if (D) Log.e(TAG, "++ ON START ++");
 
         // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
+        // setupLink() will then be called during onActivityResult
         if (!mBluetoothAdapter.isEnabled())
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -285,7 +303,10 @@ public class BlueRC extends Activity
         }
         else
         {
-            if (mChatService == null) setupChat();
+            if (mChatService == null)
+            {
+                setupLink();
+            }
         }
     }
 
@@ -309,9 +330,9 @@ public class BlueRC extends Activity
         }
     }
 
-    private void setupChat()
+    private void setupLink()
     {
-        Log.d(TAG, "setupChat()");
+        Log.d(TAG, "setupLink()");
 
         // Initialize the seek bar variables
         mThrottleBar = (SeekBar) findViewById(R.id.seekBar_Throttle);
@@ -358,11 +379,19 @@ public class BlueRC extends Activity
         return 0;
     }
 
+    public static int string2Value(String str, int offset)
+    {
+        char buff[] = new char[3];
+
+        str.getChars(offset, offset + 2, buff, 0);
+        return (ascii2Digit(buff[0]) << 4) + (ascii2Digit(buff[1]));
+    }
+
     public static int calib2Value(int register)
     {
         char buff[] = new char[3];
 
-        mCalibrationData.getChars(register, register + 1, buff, 0);
+        mCalibrationData.getChars(register, register + 2, buff, 0);
         return (ascii2Digit(buff[0]) << 4) + (ascii2Digit(buff[1]));
     }
 
@@ -441,20 +470,47 @@ public class BlueRC extends Activity
             return;
         }
 
-        // Check that there's actually something to send
-        if (message.length() > 0)
+        // we can only send if there is not another transaction in progress
+        if(false == mWaitingForAck)
         {
-            if (!message.contentEquals("$$$"))
+            // Check that there's actually something to send
+            if (message.length() > 0)
             {
-                message = message.concat("\n");
+                // Put the current message in the queue
+                mTxQueue.add(message);
+                // Get the oldest message from the queue
+                message = mTxQueue.remove();
+                if (!message.contentEquals("$$$"))
+                {
+                    message = message.concat("\n");
+                }
+                // Get the message bytes and tell the BluetoothChatService to write
+                byte[] send = message.getBytes();
+                mChatService.write(send);
+                mWaitingForAck = true;
             }
-            // Get the message bytes and tell the BluetoothChatService to write
-            byte[] send = message.getBytes();
-            mChatService.write(send);
+            else
+            {
+                // Just emptying the queue
+                if(mTxQueue.size() > 0)
+                {
+                    message = mTxQueue.remove();
+                    if (!message.contentEquals("$$$"))
+                    {
+                        message = message.concat("\n");
+                    }
+                    // Get the message bytes and tell the BluetoothChatService to write
+                    byte[] send = message.getBytes();
+                    mChatService.write(send);
+                    mWaitingForAck = true;
+                }
+            }
+        }
+        else
+        {
+            // We can't send right now: put the current message in the queue
+            mTxQueue.add(message);
 
-            // Reset out string buffer to zero and clear the edit text field
-            //           mOutStringBuffer.setLength(0);
-            //           mOutEditText.setText(mOutStringBuffer);
         }
     }
 
@@ -489,6 +545,7 @@ public class BlueRC extends Activity
         {
             message = message.concat(int2String(mCalibValues[loopCt]));
         }
+        message = message.concat("!");
         mCalibrationData = message;
     }
 
@@ -502,12 +559,33 @@ public class BlueRC extends Activity
         message = message.concat(int2String(mSafeDrain1));
         message = message.concat(int2String(mSafeDrain2));
         message = message.concat(int2String(mSafeWhistle));
+        message = message.concat("!");
         mSafeData = message;
+    }
+
+    private String buildNameString()
+    {
+        String message = new String();
+        message = "@C21";
+        if(mNameLength < (255 - 0x21))
+        {
+            message = message.concat(int2String(mNameLength));
+            message = message.concat(mLocomotiveName);
+        }
+        else
+        {
+            message = message.concat("DE");
+            message = message.concat(mLocomotiveName.substring(0, 0xDD));
+        }
+        message = message.concat("!");
+        return message;
     }
 
     // Decodes messages coming from the locomotive.
     private void decodeMessages(String message)
     {
+        mWaitingForAck = false;
+        sendMessageRc(""); // call with an empty message to send any old message that might still be in the queue
         if (message.contains("#A0611"))
         {
             // This message contains the calibration data
@@ -521,7 +599,6 @@ public class BlueRC extends Activity
                 {
                     mCalibValues[loopCt] = calib2Value((loopCt * 2) + 10);
                 }
-
             }
             else
             {
@@ -566,6 +643,12 @@ public class BlueRC extends Activity
             }
             buildSafeString();
         }
+
+        if(message.contains("#A21"))
+        {
+            // This message contains the name string
+            mLocomotiveName = message.substring(6, 6 + string2Value(message, 4));
+        }
     }
 
     // The Handler that gets information back from the BluetoothChatService
@@ -588,9 +671,11 @@ public class BlueRC extends Activity
                                 // Get ready to warn the user once if the connection goes away.
                                 mWarnOnNoConnection = true;
                                 // Query the receiver for its calibration data
-                                sendMessageRc("@Q0611!");
-                                // Query the receiver for its safe data
-                                sendMessageRc("@Q1B06");
+                                sendMessageRc("@Q0612!");
+                                // Query the receiver for the safe values
+                                sendMessageRc("@Q1B06!");
+                                // Query the receiver for its name
+                                sendMessageRc("@Q210F!");
                                 break;
                             case BluetoothChatService.STATE_CONNECTING:
                                 setStatus(R.string.title_connecting);
@@ -646,7 +731,7 @@ public class BlueRC extends Activity
                 if (resultCode == Activity.RESULT_OK)
                 {
                     // Bluetooth is now enabled, so set up a chat session
-                    setupChat();
+                    setupLink();
                 }
                 else
                 {
@@ -657,12 +742,11 @@ public class BlueRC extends Activity
                 }
             case SAVE_SETUP:
                 // Save the calibration data to the device's EEPROM.
-                String message = new String();
-                message = data.getStringExtra(EXTRA_MESSAGE);
-                // Transform the received packet into one ready to be sent
-                message = message.replace("#A","@C");
-                message = message.replace("?","!");
-                sendMessageRc(message);
+                buildCalibrationString();
+                sendMessageRc(mCalibrationData);
+                buildSafeString();
+                sendMessageRc(mSafeData);
+                sendMessageRc(buildNameString());
         }
     }
 

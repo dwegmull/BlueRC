@@ -41,6 +41,7 @@
                     android:layout_column="1"
                     />
             <android.widget.CheckBox
+                    android:id="@+id/ck_timeout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_row="0"
@@ -135,6 +136,7 @@
                     android:layout_column="0"
                     />
             <android.widget.CheckBox
+                    android:id="@+id/ck_reverse1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_row="7"
@@ -197,6 +199,7 @@
                     android:layout_row="11"/>
             <!-- Start Reverser 2 -->
             <android.widget.TextView
+                    android:id="@+id/ck_reverse2"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:text="@string/reverse2"
@@ -275,6 +278,7 @@
                     android:layout_column="0"
                     />
             <android.widget.CheckBox
+                    android:id="@+id/ck_drain1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_row="17"
@@ -329,6 +333,7 @@
                     android:layout_column="0"
                     />
             <android.widget.CheckBox
+                    android:id="@+id/ck_drain2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_row="21"
@@ -383,6 +388,7 @@
                     android:layout_column="0"
                     />
             <android.widget.CheckBox
+                    android:id="@+id/ck_whistle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_row="25"
