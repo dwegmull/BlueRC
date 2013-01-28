@@ -97,18 +97,18 @@ public class BlueRC extends Activity
     public static final int  REG_VERSION_F_LO    =   45;
     public static final int  REG_VERSION_P_HI    =   46;
     public static final int  REG_VERSION_P_LO    =   47;
-    public static final int  REG_SAFE_THROTTLE_HI =  48;
-    public static final int  REG_SAFE_THROTTLE_LO =  49;
-    public static final int  REG_SAFE_REVERSE1_HI =  50;
-    public static final int  REG_SAFE_REVERSE1_LO =  51;
-    public static final int  REG_SAFE_REVERSE2_HI =  52;
-    public static final int  REG_SAFE_REVERSE2_LO =  53;
-    public static final int  REG_SAFE_DRAIN1_HI   =  54;
-    public static final int  REG_SAFE_DRAIN1_LO   =  55;
-    public static final int  REG_SAFE_DRAIN2_HI   =  56;
-    public static final int  REG_SAFE_DRAIN2_LO   =  57;
-    public static final int  REG_SAFE_WHISTLE_HI  =  58;
-    public static final int  REG_SAFE_WHISTLE_LO  =  59;
+    public static final int  REG_SAFE_THROTTLE_HI =  6;
+    public static final int  REG_SAFE_THROTTLE_LO =  7;
+    public static final int  REG_SAFE_REVERSE1_HI =  8;
+    public static final int  REG_SAFE_REVERSE1_LO =  9;
+    public static final int  REG_SAFE_REVERSE2_HI =  10;
+    public static final int  REG_SAFE_REVERSE2_LO =  11;
+    public static final int  REG_SAFE_DRAIN1_HI   =  12;
+    public static final int  REG_SAFE_DRAIN1_LO   =  13;
+    public static final int  REG_SAFE_DRAIN2_HI   =  14;
+    public static final int  REG_SAFE_DRAIN2_LO   =  15;
+    public static final int  REG_SAFE_WHISTLE_HI  =  16;
+    public static final int  REG_SAFE_WHISTLE_LO  =  17;
     public static final int  REG_DESC_SIZE_HI     =  60;
     public static final int  REG_DESC_SIZE_LO     =  61;
     public static final int  REG_DESCRIPTION_HI   =  62;
@@ -140,6 +140,7 @@ public class BlueRC extends Activity
     // Layout Views
     private SeekBar mThrottleBar;
     private SeekBar mWhistleBar;
+    private Button mSetupButton;
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
@@ -154,7 +155,7 @@ public class BlueRC extends Activity
     private static String mCalibrationData = new String("");
 
     // Calibration values
-    public int mCalibValues[] = new int[15];
+    public int mCalibValues[] = new int[16];
     public static final int CALIB_THROTTLE_LOW = 0;
     public static final int CALIB_THROTTLE_MID = 1;
     public static final int CALIB_THROTTLE_HI = 2;
@@ -286,8 +287,9 @@ public class BlueRC extends Activity
             }
         });
 
-
+        mSetupButton = (Button)findViewById(R.id.button_setup);
     }
+
     @Override
     public void onStart()
     {
@@ -586,7 +588,7 @@ public class BlueRC extends Activity
     {
         mWaitingForAck = false;
         sendMessageRc(""); // call with an empty message to send any old message that might still be in the queue
-        if (message.contains("#A0611"))
+        if (message.contains("#A0612"))
         {
             // This message contains the calibration data
             mCalibrationData = message;
@@ -607,6 +609,8 @@ public class BlueRC extends Activity
                 default_calibration();
                 buildCalibrationString();
             }
+            // Now we allow the user to go into the setup
+            mSetupButton.setEnabled(true);
 
         }
 
@@ -624,6 +628,7 @@ public class BlueRC extends Activity
             // only trust them if the EEPROM is valid
             if(0x42 == mEEPROMValid)
             {
+                mCalibrationData = message;
                 mSafeThrottle = calib2Value(REG_SAFE_THROTTLE_HI);
                 mSafeReverse1 = calib2Value(REG_SAFE_REVERSE1_HI);
                 mSafeReverse2 = calib2Value(REG_SAFE_REVERSE2_HI);

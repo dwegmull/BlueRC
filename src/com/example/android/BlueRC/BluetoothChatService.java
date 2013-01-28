@@ -470,7 +470,7 @@ public class BluetoothChatService {
                     else
                     {
                         int i;
-                        for(i = 1; i < bytes; i++)
+                        for(i = 0; i < bytes; i++)
                         {
                             mRxPacket += (char)buffer[i];
                         }
@@ -478,7 +478,7 @@ public class BluetoothChatService {
                     if(mRxPacket.contains("?"))
                     {
                         // We have a complete packet: send it to the UI
-                        mHandler.obtainMessage(BlueRC.MESSAGE_READ, bytes, -1, mRxPacket.getBytes()).sendToTarget();
+                        mHandler.obtainMessage(BlueRC.MESSAGE_READ, mRxPacket.length(), -1, mRxPacket.getBytes()).sendToTarget();
                         mRxPacket = "";
                     }
                 } catch (IOException e) {
