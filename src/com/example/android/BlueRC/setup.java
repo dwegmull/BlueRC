@@ -70,53 +70,133 @@ public class setup extends Activity
 
         mFullThrottleBar = (SeekBar)findViewById(R.id.seek_full_throttle);
         mFullThrottleBar.setProgress(BlueRC.calib2Value(BlueRC.REG_HI_THROTTLE_HI));
+        mFullThrottleBar.setOnSeekBarChangeListener(mSeekListener);
         mMidThrottleBar = (SeekBar)findViewById(R.id.seek_mid_throttle);
         mMidThrottleBar.setProgress(BlueRC.calib2Value(BlueRC.REG_MI_THROTTLE_HI));
+        mMidThrottleBar.setOnSeekBarChangeListener(mSeekListener);
         mClosedThrottleBar = (SeekBar)findViewById(R.id.seek_mid_throttle);
         mClosedThrottleBar.setProgress(BlueRC.calib2Value(BlueRC.REG_LO_THROTTLE_HI));
+        mClosedThrottleBar.setOnSeekBarChangeListener(mSeekListener);
 
         mReverse1CkWidget = (CheckBox)findViewById(R.id.ck_reverse1);
         mReverse1CkWidget.setChecked(!(0 == (BlueRC.FEATURES_REVERSE1 & BlueRC.calib2Value(BlueRC.REG_FEATURES_HI))));
 
         mReverse1Forward = (SeekBar)findViewById(R.id.seek_forward1);
         mReverse1Forward.setProgress(BlueRC.calib2Value(BlueRC.REG_HI_REVERSE1_HI));
+        mReverse1Forward.setOnSeekBarChangeListener(mSeekListener);
         mReverse1Stop = (SeekBar)findViewById(R.id.seek_stop1);
         mReverse1Stop.setProgress(BlueRC.calib2Value(BlueRC.REG_MI_REVERSE1_HI));
+        mReverse1Stop.setOnSeekBarChangeListener(mSeekListener);
         mReverse1Reverse = (SeekBar)findViewById(R.id.seek_reverse1);
         mReverse1Reverse.setProgress(BlueRC.calib2Value(BlueRC.REG_LO_REVERSE1_HI));
+        mReverse1Reverse.setOnSeekBarChangeListener(mSeekListener);
 
         mReverse2CkWidget = (CheckBox)findViewById(R.id.ck_reverse2);
         mReverse2CkWidget.setChecked(!(0 == (BlueRC.FEATURES_REVERSE2 & BlueRC.calib2Value(BlueRC.REG_FEATURES_HI))));
 
         mReverse2Forward = (SeekBar)findViewById(R.id.seek_forward2);
         mReverse2Forward.setProgress(BlueRC.calib2Value(BlueRC.REG_HI_REVERSE1_HI));
+        mReverse2Forward.setOnSeekBarChangeListener(mSeekListener);
         mReverse2Stop = (SeekBar)findViewById(R.id.seek_stop1);
         mReverse2Stop.setProgress(BlueRC.calib2Value(BlueRC.REG_MI_REVERSE2_HI));
+        mReverse2Stop.setOnSeekBarChangeListener(mSeekListener);
         mReverse2Reverse = (SeekBar)findViewById(R.id.seek_reverse2);
         mReverse2Reverse.setProgress(BlueRC.calib2Value(BlueRC.REG_LO_REVERSE2_HI));
+        mReverse2Reverse.setOnSeekBarChangeListener(mSeekListener);
 
         mDrain1CkWidget = (CheckBox)findViewById(R.id.ck_drain1);
         mDrain1CkWidget.setChecked(!(0 == (BlueRC.FEATURES_DRAIN1 & BlueRC.calib2Value(BlueRC.REG_FEATURES_HI))));
 
         mDrain1Open = (SeekBar)findViewById(R.id.seek_drain_on1);
         mDrain1Open.setProgress(BlueRC.calib2Value(BlueRC.REG_LO_DRAIN1_HI));
+        mDrain1Open.setOnSeekBarChangeListener(mSeekListener);
         mDrain1Closed = (SeekBar)findViewById(R.id.seek_drain_off1);
         mDrain1Closed.setProgress(BlueRC.calib2Value(BlueRC.REG_HI_DRAIN1_HI));
+        mDrain1Closed.setOnSeekBarChangeListener(mSeekListener);
 
         mDrain2CkWidget = (CheckBox)findViewById(R.id.ck_drain2);
         mDrain2CkWidget.setChecked(!(0 == (BlueRC.FEATURES_DRAIN2 & BlueRC.calib2Value(BlueRC.REG_FEATURES_HI))));
 
         mDrain2Open = (SeekBar)findViewById(R.id.seek_drain_on2);
         mDrain2Open.setProgress(BlueRC.calib2Value(BlueRC.REG_LO_DRAIN2_HI));
+        mDrain2Open.setOnSeekBarChangeListener(mSeekListener);
         mDrain2Closed = (SeekBar)findViewById(R.id.seek_drain_off2);
         mDrain2Closed.setProgress(BlueRC.calib2Value(BlueRC.REG_HI_DRAIN2_HI));
+        mDrain2Closed.setOnSeekBarChangeListener(mSeekListener);
 
         mWhistleCkWidget = (CheckBox)findViewById(R.id.ck_whistle);
         mWhistleCkWidget.setChecked(!(0 == (BlueRC.FEATURES_WHISTLE & BlueRC.calib2Value(BlueRC.REG_FEATURES_HI))));
 
         mWhistleOpen = (SeekBar)findViewById(R.id.seek_whistle_on);
         mWhistleOpen.setProgress(BlueRC.calib2Value(BlueRC.REG_HI_WHISTLE_HI));
+        mWhistleOpen.setOnSeekBarChangeListener(mSeekListener);
         mWhistleClosed = (SeekBar)findViewById(R.id.seek_whistle_off);
         mWhistleClosed.setProgress(BlueRC.calib2Value(BlueRC.REG_LO_WHISTLE_HI));
+        mWhistleClosed.setOnSeekBarChangeListener(mSeekListener);
     }
+
+    private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener()
+    {
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+        {
+            if((seekBar.equals(mFullThrottleBar)) || (seekBar.equals(mMidThrottleBar)) || (seekBar.equals(mClosedThrottleBar)))
+            {
+                String message = new String();
+                message = "@C0001";
+                message = message.concat(BlueRC.int2String(progress));
+                message = message.concat("!");
+                BlueRC.sendMessageRc(message);
+            }
+            if((seekBar.equals(mReverse1Forward)) || (seekBar.equals(mReverse1Stop)) || (seekBar.equals(mReverse1Reverse)))
+            {
+                String message = new String();
+                message = "@C0101";
+                message = message.concat(BlueRC.int2String(progress));
+                message = message.concat("!");
+                BlueRC.sendMessageRc(message);
+            }
+            if((seekBar.equals(mReverse2Forward)) || (seekBar.equals(mReverse2Stop)) || (seekBar.equals(mReverse2Reverse)))
+            {
+                String message = new String();
+                message = "@C0201";
+                message = message.concat(BlueRC.int2String(progress));
+                message = message.concat("!");
+                BlueRC.sendMessageRc(message);
+            }
+            if((seekBar.equals(mDrain1Open)) || (seekBar.equals(mDrain1Closed)))
+            {
+                String message = new String();
+                message = "@C0301";
+                message = message.concat(BlueRC.int2String(progress));
+                message = message.concat("!");
+                BlueRC.sendMessageRc(message);
+            }
+            if((seekBar.equals(mDrain2Open)) || (seekBar.equals(mDrain2Closed)))
+            {
+                String message = new String();
+                message = "@C0401";
+                message = message.concat(BlueRC.int2String(progress));
+                message = message.concat("!");
+                BlueRC.sendMessageRc(message);
+            }
+            if((seekBar.equals(mWhistleOpen)) || (seekBar.equals(mWhistleClosed)))
+            {
+                String message = new String();
+                message = "@C0501";
+                message = message.concat(BlueRC.int2String(progress));
+                message = message.concat("!");
+                BlueRC.sendMessageRc(message);
+            }
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar)
+        {
+            // TODO Auto-generated method stub
+        }
+
+        public void onStopTrackingTouch(SeekBar seekBar)
+        {
+            // TODO Auto-generated method stub
+        }
+    };
 }

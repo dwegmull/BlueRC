@@ -149,7 +149,7 @@ public class BlueRC extends Activity
     private BluetoothAdapter mBluetoothAdapter = null;
 
     // Member object for the chat services
-    private BluetoothChatService mChatService = null;
+    private static BluetoothChatService mChatService = null;
 
     // Calibration data stored inside the receiver's EEPROM.
     private static String mCalibrationData = new String("");
@@ -186,8 +186,8 @@ public class BlueRC extends Activity
     private int mSafeWhistle;
     private String mSafeData = new String();
 
-    private boolean mWarnOnNoConnection = true;
-    private boolean mWaitingForAck = false;
+    private static boolean mWarnOnNoConnection = true;
+    private static boolean mWaitingForAck = false;
 
     // Locomotive name
     public String mLocomotiveName = new String();
@@ -213,7 +213,7 @@ public class BlueRC extends Activity
     }
 
     // Message queue
-    private LinkedList<String> mTxQueue = new LinkedList<String>();
+    private static LinkedList<String> mTxQueue = new LinkedList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -398,7 +398,7 @@ public class BlueRC extends Activity
         return (ascii2Digit(buff[0]) << 4) + (ascii2Digit(buff[1]));
     }
 
-    public String int2String(int value)
+    public static String int2String(int value)
     {
         String s = new String();
         if (16 > value)
@@ -463,12 +463,12 @@ public class BlueRC extends Activity
      * Sends a message.
      * @param message  A string of text to send.
      */
-    private void sendMessageRc(String message)
+    public static void sendMessageRc(String message)
     {
         // Check that we're actually connected before trying anything
         if ((mChatService.getState() != BluetoothChatService.STATE_CONNECTED) && mWarnOnNoConnection)
         {
-            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             mWarnOnNoConnection = false;
             return;
         }
@@ -512,29 +512,30 @@ public class BlueRC extends Activity
         else
         {
             // We can't send right now: put the current message in the queue
-            mTxQueue.add(message);
-
+            // If the message we want to send is a servo value, check if other values for the same channel are
+            // already in the queue: if so replace them with the new value
+            String Reg = message.substring(1, 6);
+            if(Reg.contains("C0001"))
+            {
+                for(int i = 0; i < mTxQueue.size(); i++)
+                {
+                    String element = mTxQueue.get(i);
+                    if (element.contains(Reg))
+                    {
+                       // Replace the existing message in the queue by the up to date value
+                       mTxQueue.set(i,message);
+                       return;
+                    }
+                }
+                // This message does not exist in the queue: add it
+            }
+            else
+            {
+                mTxQueue.add(message);
+            }
         }
     }
 
-
-    private final void setStatus(int resId)
-    {
-        final ActionBar actionBar = getActionBar();
-        if (null != actionBar)
-        {
-            actionBar.setSubtitle(resId);
-        }
-    }
-
-    private final void setStatus(CharSequence subTitle)
-    {
-        final ActionBar actionBar = getActionBar();
-        if (null != actionBar)
-        {
-            actionBar.setSubtitle(subTitle);
-        }
-    }
 
     private void buildCalibrationString()
     {
@@ -571,15 +572,23 @@ public class BlueRC extends Activity
     {
         String message = new String();
         message = "@C21";
-        if(mNameLength < (255 - 0x21))
+        if(0 == mNameLength)
         {
-            message = message.concat(int2String(mNameLength));
-            message = message.concat(mLocomotiveName);
+            // A blank name confuses the receiver firmware
+            message = message.concat("01 ");
         }
         else
         {
-            message = message.concat("DE");
-            message = message.concat(mLocomotiveName.substring(0, 0xDD));
+            if(mNameLength < (255 - 0x21))
+            {
+                message = message.concat(int2String(mNameLength));
+                message = message.concat(mLocomotiveName);
+            }
+            else
+            {
+                message = message.concat("DE");
+                message = message.concat(mLocomotiveName.substring(0, 0xDD));
+            }
         }
         message = message.concat("!");
         return message;
@@ -674,7 +683,6 @@ public class BlueRC extends Activity
                         switch (msg.arg1)
                         {
                             case BluetoothChatService.STATE_CONNECTED:
-                                setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
                                 // Get ready to warn the user once if the connection goes away.
                                 mWarnOnNoConnection = true;
                                 // Query the receiver for its calibration data
@@ -685,11 +693,8 @@ public class BlueRC extends Activity
                                 sendMessageRc("@Q210F!");
                                 break;
                             case BluetoothChatService.STATE_CONNECTING:
-                                setStatus(R.string.title_connecting);
-                                break;
                             case BluetoothChatService.STATE_LISTEN:
                             case BluetoothChatService.STATE_NONE:
-                                setStatus(R.string.title_not_connected);
                                 break;
                         }
                         break;
