@@ -175,6 +175,7 @@ public class BlueRC extends Activity
     // Other EEPROM registers
     public int mEEPROMValid = 0x42;
     public int mFeatures = 0x00;
+    public int mTimeout = 0x00; // No timeout for now, while debugging
 
     // Safe Values
     private int mSafeThrottle;
@@ -547,6 +548,7 @@ public class BlueRC extends Activity
         {
             message = message.concat(int2String(mCalibValues[loopCt]));
         }
+        message = message.concat(int2String(mTimeout));
         message = message.concat("!");
         mCalibrationData = message;
     }
@@ -776,6 +778,8 @@ public class BlueRC extends Activity
 
     public void OnSetupButtonClick(View view)
     {
+        // Make sure the calibration string is valid
+        buildCalibrationString();
         // Launch the DeviceListActivity to see devices and do scan
         Intent serverIntent = new Intent(this, setup.class);
         serverIntent.putExtra(EXTRA_MESSAGE, mCalibrationData);
