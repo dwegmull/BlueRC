@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import static android.widget.SeekBar.OnSeekBarChangeListener;
+import static java.lang.Thread.sleep;
 
 /**
  * This is the main Activity that displays the current chat session.
@@ -599,6 +600,10 @@ public class BlueRC extends Activity
     {
         mWaitingForAck = false;
         sendMessageRc(""); // call with an empty message to send any old message that might still be in the queue
+
+//        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+//        toast.show();
+
         if (message.contains("#A0612"))
         {
             // This message contains the calibration data
@@ -770,7 +775,7 @@ public class BlueRC extends Activity
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        mChatService.connect(device, secure);
+        mChatService.connect(device);
     }
 
     public void OnConnectButtonClick(View view)
