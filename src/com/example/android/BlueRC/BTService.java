@@ -56,13 +56,17 @@ public class BTService
     public static final int STATE_CONNECTING = 1; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 2;  // now connected to a remote device
     public static final int STATE_LOST = 3;       // The connection was dropped
+    public static final int STATE_ERROR = 4;       // The connection was dropped
+    public static final int STATE_RETRY = 5;       // The connection was dropped
+
 
     /**
      * Constructor. Prepares a new BlueRC session.
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BTService(Context context, Handler handler) {
+    public BTService(Context context, Handler handler)
+    {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;
@@ -72,17 +76,21 @@ public class BTService
      * Set the current state of the chat connection
      * @param state  An integer defining the current connection state
      */
-    private synchronized void setState(int state) {
-        if (D) Log.d(TAG, "setState() " + mState + " -> " + state);
+    private synchronized void setState(int state)
+    {
+        if (D)
+        {
+            Log.d(TAG, "setState() " + mState + " -> " + state);
+        }
         mState = state;
-
         // Give the new state to the Handler so the UI Activity can update
         mHandler.obtainMessage(BlueRC.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
      * Return the current connection state. */
-    public synchronized int getState() {
+    public synchronized int getState()
+    {
         return mState;
     }
 
@@ -92,12 +100,15 @@ public class BTService
      * Start the WorkerThread to initiate a connection to a remote device.
      * @param device  The BluetoothDevice to connect
      */
-    public synchronized void connect(BluetoothDevice device) {
+    public synchronized void connect(BluetoothDevice device)
+    {
         if (D) Log.d(TAG, "connect to: " + device);
 
         // Cancel any thread attempting to make a connection
-        if (mState == STATE_CONNECTING) {
-            if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
+        if (mConnectThread != null)
+        {
+            mConnectThread.cancel();
+            mConnectThread = null;
         }
 
         // Start the thread to connect with the given device
@@ -109,15 +120,17 @@ public class BTService
     /**
      * Stop the worker thread
      */
-    public synchronized void stop() {
+    public synchronized void stop()
+    {
         if (D) Log.d(TAG, "stop");
 
-        if (mConnectThread != null) {
+        if (mConnectThread != null)
+        {
             mConnectThread.cancel();
             mConnectThread = null;
         }
 
-        setState(STATE_NONE);
+        mState = STATE_NONE;
     }
 
     /**
@@ -125,12 +138,17 @@ public class BTService
      * @param out The bytes to write
      * @see WorkerThread#write(byte[])
      */
-    public void write(byte[] out) {
+    public void write(byte[] out)
+    {
         // Create temporary object
         WorkerThread r;
         // Synchronize a copy of the ConnectedThread
-        synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
+        synchronized (this)
+        {
+            if(mState != STATE_CONNECTED)
+            {
+                return;
+            }
             r = mConnectThread;
         }
         // Perform the write unsynchronized
@@ -148,18 +166,21 @@ public class BTService
         bundle.putString(BlueRC.TOAST, "Can't connect");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
+        setState(STATE_RETRY);
     }
 
     /**
      * Indicate that the connection was lost and notify the UI Activity.
      */
-    private void connectionLost() {
+    private void connectionLost()
+    {
         // Send a failure message back to the Activity
         Message msg = mHandler.obtainMessage(BlueRC.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(BlueRC.TOAST, "Connection lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
+        setState(STATE_LOST);
     }
 
 
@@ -172,16 +193,19 @@ public class BTService
      */
     private class WorkerThread extends Thread
     {
-        private final BluetoothSocket mmSocket;
+        private BluetoothSocket mmSocket = null;
         private final BluetoothDevice mmDevice;
         private String mRxPacket = new String("");
         private InputStream mmInStream;
         private OutputStream mmOutStream;
+        private boolean running = true;
 
         public WorkerThread(BluetoothDevice device)
         {
             mmDevice = device;
+            mState = STATE_CONNECTING;
             BluetoothSocket tmp = null;
+            running = true;
 
             // Get a BluetoothSocket for a connection with the
             // given BluetoothDevice
@@ -192,6 +216,8 @@ public class BTService
             catch (IOException e)
             {
                 Log.e(TAG, "Socket create() failed", e);
+                setState(STATE_ERROR);
+                return;
             }
             mmSocket = tmp;
         }
@@ -203,7 +229,10 @@ public class BTService
             setName("WorkerThread");
 
             // Always cancel discovery because it will slow down a connection
-            mAdapter.cancelDiscovery();
+            if(mAdapter.isDiscovering())
+            {
+                mAdapter.cancelDiscovery();
+            }
 
             // Make a connection to the BluetoothSocket
             try
@@ -214,6 +243,7 @@ public class BTService
             }
             catch (IOException e)
             {
+                Log.e(TAG, "Exception while doing a .connect: ", e);
                 // Close the socket
                 try
                 {
@@ -256,8 +286,10 @@ public class BTService
             setState(STATE_CONNECTED);
 
             // Keep listening to the InputStream while connected
-            while (true) {
-                try {
+            while (running)
+            {
+                try
+                {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     if(0 == mRxPacket.length())
@@ -286,36 +318,53 @@ public class BTService
                         mHandler.obtainMessage(BlueRC.MESSAGE_READ, mRxPacket.length(), -1, mRxPacket.getBytes()).sendToTarget();
                         mRxPacket = "";
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
                     break;
                 }
             }
+            try
+            {
+                mmSocket.close();
+            }
+            catch (IOException e)
+            {
+                Log.e(TAG, "close() of connect socket failed", e);
+            }
+
         }
 
-        public void cancel() {
-            try {
+        public void cancel()
+        {
+            running = false;
+            try
+            {
                 mmSocket.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }
 
-        public void write(byte[] buffer) {
-            try {
+        public void write(byte[] buffer)
+        {
+            try
+            {
                 mRxPacket = ""; // Empty the rx packet buffer, to clear any left overs from a past failed reception.
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
                 mHandler.obtainMessage(BlueRC.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 Log.e(TAG, "Exception during write", e);
             }
         }
-
     }
 }
-
-

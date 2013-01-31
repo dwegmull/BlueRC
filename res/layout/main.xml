@@ -31,7 +31,6 @@
             android:onClick="OnConnectButtonClick"
         />
         <android.widget.Button android:id="@+id/button_setup"
-                android:enabled="false"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/setup"

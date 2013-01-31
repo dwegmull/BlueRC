@@ -146,6 +146,12 @@ public class BlueRC extends Activity
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
 
+    // Remote device address
+    private String mRemoteAddress = new String("");
+
+    // Number of retries before giving up on connection
+    private int mConnectRetries = 10;
+
     // Member object for the chat services
     private static BTService mBTservice = null;
 
@@ -210,6 +216,10 @@ public class BlueRC extends Activity
         mCalibValues[14] = 110;
     }
 
+    // Button availability flags
+    private boolean setupButtonActive = false;
+    private boolean connectButtonActive = true;
+
     // Message queue
     private static LinkedList<String> mTxQueue = new LinkedList<String>();
 
@@ -230,7 +240,8 @@ public class BlueRC extends Activity
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // If the adapter is null, then Bluetooth is not supported
-        if (mBluetoothAdapter == null) {
+        if (mBluetoothAdapter == null)
+        {
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -286,7 +297,6 @@ public class BlueRC extends Activity
             }
         });
 
-        mSetupButton = (Button)findViewById(R.id.button_setup);
     }
 
     @Override
@@ -314,6 +324,7 @@ public class BlueRC extends Activity
     @Override
     public synchronized void onResume()
     {
+        mSetupButton = (Button)findViewById(R.id.button_setup);
         super.onResume();
         if (D) Log.e(TAG, "+ ON RESUME +");
 
@@ -342,7 +353,11 @@ public class BlueRC extends Activity
     public void onStop()
     {
         super.onStop();
-        if (D) Log.e(TAG, "-- ON STOP --");
+        if(D) Log.e(TAG, "-- ON STOP --");
+        if(mBTservice != null)
+        {
+            mBTservice.stop();
+        }
     }
 
     @Override
@@ -350,7 +365,10 @@ public class BlueRC extends Activity
     {
         super.onDestroy();
         // Stop the Bluetooth chat services
-        if (mBTservice != null) mBTservice.stop();
+        if (mBTservice != null)
+        {
+            mBTservice.stop();
+        }
         if (D) Log.e(TAG, "--- ON DESTROY ---");
     }
 
@@ -588,13 +606,14 @@ public class BlueRC extends Activity
 
 //        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
 //        toast.show();
-
+        if (D) Log.i(TAG, "decode message: " + message);
         if (message.contains("#A0612"))
         {
             // This message contains the calibration data
             mCalibrationData = message;
             if (0x42 == calib2Value(REG_EEPROM_VALID_HI))
             {
+                if (D) Log.i(TAG, "EEPROM valid ");
                 // This is valid calibration data: use it!
                 mEEPROMValid = 0x42;
                 int loopCt;
@@ -605,13 +624,15 @@ public class BlueRC extends Activity
             }
             else
             {
+                if (D) Log.i(TAG, "EEPROM invalid ");
                 // Invalid EEPROM data: use safe defaults.
                 mEEPROMValid = 0;
                 default_calibration();
                 buildCalibrationString();
             }
             // Now we allow the user to go into the setup
-            mSetupButton.setEnabled(true);
+            setupButtonActive = true;
+            if (D) Log.i(TAG, "Setup button enabled ");
 
         }
 
@@ -683,35 +704,46 @@ public class BlueRC extends Activity
                                 sendMessageRc("@Q210F!");
                                 break;
                             case BTService.STATE_LOST:
-                                mSetupButton.setEnabled(false);
+                                setupButtonActive = false;
+                                connectButtonActive = true;
                                 mThrottleBar.setProgress(0);
                                 mWhistleBar.setProgress(0);
                                 break;
                             case BTService.STATE_CONNECTING:
                             case BTService.STATE_NONE:
+                            default:
+                                break;
+                            case BTService.STATE_RETRY:
+                                if(0 != mConnectRetries)
+                                {
+                                    mConnectRetries--;
+                                    mBluetoothAdapter.disable();
+                                    mBluetoothAdapter.enable();
+                                    connectDevice();
+                                }
                                 break;
                         }
                         break;
                     case MESSAGE_WRITE:
-                        byte[] writeBuf = (byte[]) msg.obj;
-                        // construct a string from the buffer
-                        String writeMessage = new String(writeBuf);
-                        //mConversationArrayAdapter.add("Me:  " + writeMessage);
+                        if (D) Log.e(TAG, "MESSAGE_WRITE");
                         break;
                     case MESSAGE_READ:
                         byte[] readBuf = (byte[]) msg.obj;
                         // construct a string from the valid bytes in the buffer
                         String readMessage = new String(readBuf, 0, msg.arg1);
+                        if (D) Log.i(TAG, "MESSAGE_READ: " + readMessage);
                         decodeMessages(readMessage);
                         //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                         break;
                     case MESSAGE_DEVICE_NAME:
                         // save the connected device's name
+                        if (D) Log.e(TAG, "MESSAGE_DEVICE_NAME");
                         mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                         Toast.makeText(getApplicationContext(), "Connected to "
                                 + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                         break;
                     case MESSAGE_TOAST:
+                        if (D) Log.e(TAG, "MESSAGE_TOAST");
                         Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
                                 Toast.LENGTH_SHORT).show();
                         break;
@@ -729,7 +761,8 @@ public class BlueRC extends Activity
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK)
                 {
-                    connectDevice(data, false);
+                    mRemoteAddress =  data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+                    connectDevice();
                 }
                 break;
             case REQUEST_ENABLE_BT:
@@ -756,19 +789,17 @@ public class BlueRC extends Activity
         }
     }
 
-    private void connectDevice(Intent data, boolean secure)
+    private void connectDevice()
     {
-        // Get the device MAC address
-        String address = data.getExtras()
-                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mRemoteAddress);
         // Attempt to connect to the device
         mBTservice.connect(device);
     }
 
     public void OnConnectButtonClick(View view)
     {
+        mConnectRetries = 3;
         Intent serverIntent = null;
         // Launch the DeviceListActivity to see devices and do scan
         serverIntent = new Intent(this, DeviceListActivity.class);
@@ -777,12 +808,15 @@ public class BlueRC extends Activity
 
     public void OnSetupButtonClick(View view)
     {
-        // Make sure the calibration string is valid
-        buildCalibrationString();
-        // Launch the DeviceListActivity to see devices and do scan
-        Intent serverIntent = new Intent(this, setup.class);
-        serverIntent.putExtra(EXTRA_MESSAGE, mCalibrationData);
-        startActivityForResult(serverIntent, SAVE_SETUP);
+        if(true == setupButtonActive)
+        {
+            // Make sure the calibration string is valid
+            buildCalibrationString();
+            // Launch the DeviceListActivity to see devices and do scan
+            Intent serverIntent = new Intent(this, setup.class);
+            serverIntent.putExtra(EXTRA_MESSAGE, mCalibrationData);
+            startActivityForResult(serverIntent, SAVE_SETUP);
+        }
     }
 
     public void OnSetReverserForward(View view)
