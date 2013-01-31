@@ -39,18 +39,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/BluetoothChatService.java" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/BTService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/BluetoothChatService.java" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/BluetoothChatService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Blue RC.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359502026481" ignored="false" />
     <file path="/setup.xml" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1358017040123" ignored="false" />
-    <file path="/setup.java" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359486037726" ignored="false" />
-    <file path="/BlueRC.java" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359504813279" ignored="false" />
+    <file path="/setup.java" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359569229390" ignored="false" />
+    <file path="/BlueRC.java" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359592141394" ignored="false" />
     <file path="/main.xml" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1358039787022" ignored="false" />
-    <file path="/BluetoothChatService.java" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359415480592" ignored="false" />
+    <file path="/BluetoothChatService.java" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359593702623" ignored="false" />
     <file path="/AndroidManifest.xml" changelist="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" time="1359504172910" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -72,22 +73,7 @@
   </component>
   <component name="DebuggerManager">
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
-    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true">
-      <breakpoint url="file://$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java" line="141" class="com.example.android.BlueRC.setup$1" package="com.example.android.BlueRC">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-    </line_breakpoints>
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -132,30 +118,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="BlueRC.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="BlueRC.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="636" column="18" selection-start="22654" selection-end="22654" vertical-scroll-proportion="0.45141065">
+            <state line="319" column="0" selection-start="12314" selection-end="12314" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="e#8853#8861#0" expanded="true" />
+                <element signature="e#8750#8758#0" expanded="true" />
+                <element signature="method#onCreate#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#onStart#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#setupLink#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#onPause#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#onDestroy#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#ascii2Digit#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#string2Value#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#calib2Value#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#int2String#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#doCalibration#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#Calibrate#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#Calibrate#1;class#BlueRC#0" expanded="false" />
+                <element signature="method#sendMessageRc#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#buildCalibrationString#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#buildSafeString#0;class#BlueRC#0" expanded="false" />
+                <element signature="method#buildNameString#0;class#BlueRC#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <file leaf-file-name="BTService.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/BTService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="55" selection-start="1329" selection-end="1329" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BluetoothChatService.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/BluetoothChatService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="45" selection-start="1454" selection-end="1454" vertical-scroll-proportion="0.0">
+            <state line="107" column="0" selection-start="3688" selection-end="3688" vertical-scroll-proportion="1.5517242">
               <folding />
             </state>
           </provider>
@@ -164,7 +157,7 @@
       <file leaf-file-name="setup.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="134" column="65" selection-start="6629" selection-end="6629" vertical-scroll-proportion="0.0">
+            <state line="77" column="76" selection-start="3030" selection-end="3030" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -173,7 +166,7 @@
       <file leaf-file-name="main.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="78" selection-start="4616" selection-end="4616" vertical-scroll-proportion="-4.5925927">
+            <state line="103" column="55" selection-start="4616" selection-end="4616" vertical-scroll-proportion="-32.22222">
               <folding />
             </state>
           </provider>
@@ -185,12 +178,21 @@
       <file leaf-file-name="setup.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/res/layout/setup.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="446" column="37" selection-start="20211" selection-end="20211" vertical-scroll-proportion="-136.81482">
+            <state line="101" column="55" selection-start="4369" selection-end="4369" vertical-scroll-proportion="-9.037037">
               <folding />
             </state>
           </provider>
           <provider editor-type-id="android-designer">
             <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="55" selection-start="1329" selection-end="1329" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
           </provider>
         </entry>
       </file>
@@ -230,10 +232,11 @@
         <option value="$PROJECT_DIR$/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/res/layout/main.xml" />
         <option value="$PROJECT_DIR$/res/layout/setup.xml" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java" />
         <option value="$PROJECT_DIR$/src/com/example/android/BlueRC/BluetoothChatService.java" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java" />
+        <option value="$PROJECT_DIR$/src/com/example/android/BlueRC/BTService.java" />
       </list>
     </option>
   </component>
@@ -610,20 +613,20 @@
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32944405" sideWeight="0.79619855" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33560476" sideWeight="0.79619855" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18577075" sideWeight="0.82006633" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18577075" sideWeight="0.7993367" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34387353" sideWeight="0.54477614" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32905138" sideWeight="0.39220563" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34387353" sideWeight="0.5472637" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18577075" sideWeight="0.19485904" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3270751" sideWeight="0.49170813" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32905138" sideWeight="0.60199004" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32905138" sideWeight="0.60199004" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.188744" sideWeight="0.4751848" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39948675" sideWeight="0.79908675" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22553897" sideWeight="0.6709486" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20059289" sideWeight="0.80679935" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22553897" sideWeight="0.81422925" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20059289" sideWeight="0.7968491" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26603934" sideWeight="0.60273975" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26518393" sideWeight="0.60273975" order="2" side_tool="false" content_ui="tabs" />
@@ -693,11 +696,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/android-sdk-macosx/platforms/android-16/android.jar!/android/content/ContextWrapper.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="166" column="0" selection-start="9279" selection-end="9279" vertical-scroll-proportion="1.8411216" />
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/android-sdk-macosx/platforms/android-16/android.jar!/android/content/ComponentName.class">
       <provider selected="true" editor-type-id="text-editor">
         <state line="33" column="28" selection-start="1396" selection-end="1396" vertical-scroll-proportion="0.37" />
@@ -745,38 +743,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="78" selection-start="4616" selection-end="4616" vertical-scroll-proportion="-4.5925927">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/res/layout/setup.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="446" column="37" selection-start="20211" selection-end="20211" vertical-scroll-proportion="-136.81482">
+        <state line="101" column="55" selection-start="4369" selection-end="4369" vertical-scroll-proportion="-9.037037">
           <folding />
         </state>
       </provider>
       <provider editor-type-id="android-designer">
         <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="134" column="65" selection-start="6629" selection-end="6629" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/BluetoothChatService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="45" selection-start="1454" selection-end="1454" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
@@ -786,12 +760,59 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="103" column="55" selection-start="4616" selection-end="4616" vertical-scroll-proportion="-32.22222">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="77" column="76" selection-start="3030" selection-end="3030" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/DeviceListActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="13" selection-start="1576" selection-end="1576" vertical-scroll-proportion="0.19404916">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="636" column="18" selection-start="22654" selection-end="22654" vertical-scroll-proportion="0.45141065">
+        <state line="319" column="0" selection-start="12314" selection-end="12314" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#8853#8861#0" expanded="true" />
+            <element signature="e#8750#8758#0" expanded="true" />
+            <element signature="method#onCreate#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#onStart#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#setupLink#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#onPause#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#onDestroy#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#ascii2Digit#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#string2Value#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#calib2Value#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#int2String#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#doCalibration#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#Calibrate#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#Calibrate#1;class#BlueRC#0" expanded="false" />
+            <element signature="method#sendMessageRc#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#buildCalibrationString#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#buildSafeString#0;class#BlueRC#0" expanded="false" />
+            <element signature="method#buildNameString#0;class#BlueRC#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/example/android/BlueRC/BTService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="107" column="0" selection-start="3688" selection-end="3688" vertical-scroll-proportion="1.5517242">
+          <folding />
         </state>
       </provider>
     </entry>

@@ -16,7 +16,6 @@
 
 package com.example.android.BlueRC;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -28,8 +27,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
-import java.util.AbstractQueue;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import static android.widget.SeekBar.OnSeekBarChangeListener;
@@ -122,14 +119,14 @@ public class BlueRC extends Activity
     private static final String TAG = "BlueRC";
     private static final boolean D = true;
 
-    // Message types sent from the BluetoothChatService Handler
+    // Message types sent from the BTService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
 
-    // Key names received from the BluetoothChatService Handler
+    // Key names received from the BTService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
 
@@ -150,13 +147,13 @@ public class BlueRC extends Activity
     private BluetoothAdapter mBluetoothAdapter = null;
 
     // Member object for the chat services
-    private static BluetoothChatService mChatService = null;
+    private static BTService mBTservice = null;
 
     // Calibration data stored inside the receiver's EEPROM.
     private static String mCalibrationData = new String("");
 
     // Calibration values
-    public int mCalibValues[] = new int[16];
+    public static int mCalibValues[] = new int[16];
     public static final int CALIB_THROTTLE_LOW = 0;
     public static final int CALIB_THROTTLE_MID = 1;
     public static final int CALIB_THROTTLE_HI = 2;
@@ -175,8 +172,8 @@ public class BlueRC extends Activity
 
     // Other EEPROM registers
     public int mEEPROMValid = 0x42;
-    public int mFeatures = 0x00;
-    public int mTimeout = 0x00; // No timeout for now, while debugging
+    public static int mFeatures = 0x00;
+    public static int mTimeout = 0x00; // No timeout for now, while debugging
 
     // Safe Values
     private int mSafeThrottle;
@@ -307,7 +304,7 @@ public class BlueRC extends Activity
         }
         else
         {
-            if (mChatService == null)
+            if (mBTservice == null)
             {
                 setupLink();
             }
@@ -320,18 +317,6 @@ public class BlueRC extends Activity
         super.onResume();
         if (D) Log.e(TAG, "+ ON RESUME +");
 
-        // Performing this check in onResume() covers the case in which BT was
-        // not enabled during onStart(), so we were paused to enable it...
-        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mChatService != null)
-        {
-            // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BluetoothChatService.STATE_NONE)
-            {
-                // Start the Bluetooth chat services
-                mChatService.start();
-            }
-        }
     }
 
     private void setupLink()
@@ -341,8 +326,8 @@ public class BlueRC extends Activity
         // Initialize the seek bar variables
         mThrottleBar = (SeekBar) findViewById(R.id.seekBar_Throttle);
         mWhistleBar = (SeekBar) findViewById(R.id.seekBar_whistle);
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothChatService(this, mHandler);
+        // Initialize the BTService to perform bluetooth connections
+        mBTservice = new BTService(this, mHandler);
 
     }
 
@@ -365,7 +350,7 @@ public class BlueRC extends Activity
     {
         super.onDestroy();
         // Stop the Bluetooth chat services
-        if (mChatService != null) mChatService.stop();
+        if (mBTservice != null) mBTservice.stop();
         if (D) Log.e(TAG, "--- ON DESTROY ---");
     }
 
@@ -467,7 +452,7 @@ public class BlueRC extends Activity
     public static void sendMessageRc(String message)
     {
         // Check that we're actually connected before trying anything
-        if ((mChatService.getState() != BluetoothChatService.STATE_CONNECTED) && mWarnOnNoConnection)
+        if ((mBTservice.getState() != BTService.STATE_CONNECTED) && mWarnOnNoConnection)
         {
             //Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             mWarnOnNoConnection = false;
@@ -488,9 +473,9 @@ public class BlueRC extends Activity
                 {
                     message = message.concat("\n");
                 }
-                // Get the message bytes and tell the BluetoothChatService to write
+                // Get the message bytes and tell the BTService to write
                 byte[] send = message.getBytes();
-                mChatService.write(send);
+                mBTservice.write(send);
                 mWaitingForAck = true;
             }
             else
@@ -503,9 +488,9 @@ public class BlueRC extends Activity
                     {
                         message = message.concat("\n");
                     }
-                    // Get the message bytes and tell the BluetoothChatService to write
+                    // Get the message bytes and tell the BTService to write
                     byte[] send = message.getBytes();
-                    mChatService.write(send);
+                    mBTservice.write(send);
                     mWaitingForAck = true;
                 }
             }
@@ -672,7 +657,7 @@ public class BlueRC extends Activity
         }
     }
 
-    // The Handler that gets information back from the BluetoothChatService
+    // The Handler that gets information back from the BTService
     private final Handler mHandler;
 
     {
@@ -687,7 +672,7 @@ public class BlueRC extends Activity
                         if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                         switch (msg.arg1)
                         {
-                            case BluetoothChatService.STATE_CONNECTED:
+                            case BTService.STATE_CONNECTED:
                                 // Get ready to warn the user once if the connection goes away.
                                 mWarnOnNoConnection = true;
                                 // Query the receiver for its calibration data
@@ -697,9 +682,13 @@ public class BlueRC extends Activity
                                 // Query the receiver for its name
                                 sendMessageRc("@Q210F!");
                                 break;
-                            case BluetoothChatService.STATE_CONNECTING:
-                            case BluetoothChatService.STATE_LISTEN:
-                            case BluetoothChatService.STATE_NONE:
+                            case BTService.STATE_LOST:
+                                mSetupButton.setEnabled(false);
+                                mThrottleBar.setProgress(0);
+                                mWhistleBar.setProgress(0);
+                                break;
+                            case BTService.STATE_CONNECTING:
+                            case BTService.STATE_NONE:
                                 break;
                         }
                         break;
@@ -775,7 +764,7 @@ public class BlueRC extends Activity
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
-        mChatService.connect(device);
+        mBTservice.connect(device);
     }
 
     public void OnConnectButtonClick(View view)

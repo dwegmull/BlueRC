@@ -74,7 +74,7 @@ public class setup extends Activity
         mMidThrottleBar = (SeekBar)findViewById(R.id.seek_mid_throttle);
         mMidThrottleBar.setProgress(BlueRC.calib2Value(BlueRC.REG_MI_THROTTLE_HI));
         mMidThrottleBar.setOnSeekBarChangeListener(mSeekListener);
-        mClosedThrottleBar = (SeekBar)findViewById(R.id.seek_mid_throttle);
+        mClosedThrottleBar = (SeekBar)findViewById(R.id.seek_closed_throttle);
         mClosedThrottleBar.setProgress(BlueRC.calib2Value(BlueRC.REG_LO_THROTTLE_HI));
         mClosedThrottleBar.setOnSeekBarChangeListener(mSeekListener);
 
@@ -199,4 +199,86 @@ public class setup extends Activity
             // TODO Auto-generated method stub
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Before we go back to the main page, update all the calibration variables
+        BlueRC.mTimeout = Integer.parseInt(mTimeoutWidget.getText().toString());
+
+        // Throttle
+        if(mThrottleCkWidget.isChecked())
+        {
+            BlueRC.mFeatures |= BlueRC.FEATURES_THROTTLE;
+        }
+        else
+        {
+            BlueRC.mFeatures &= ~BlueRC.FEATURES_THROTTLE;
+        }
+        BlueRC.mCalibValues[BlueRC.CALIB_THROTTLE_HI] = mFullThrottleBar.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_THROTTLE_MID] = mMidThrottleBar.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_THROTTLE_LOW] = mClosedThrottleBar.getProgress();
+
+        // Reverser 1
+        if(mReverse1CkWidget.isChecked())
+        {
+            BlueRC.mFeatures |= BlueRC.FEATURES_REVERSE1;
+        }
+        else
+        {
+            BlueRC.mFeatures &= ~BlueRC.FEATURES_REVERSE1;
+        }
+        BlueRC.mCalibValues[BlueRC.CALIB_REVERSE1_HI] = mReverse1Forward.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_REVERSE1_MID] = mReverse1Stop.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_REVERSE1_LOW] = mReverse1Reverse.getProgress();
+
+        // Reverser 2
+        if(mReverse2CkWidget.isChecked())
+        {
+            BlueRC.mFeatures |= BlueRC.FEATURES_REVERSE2;
+        }
+        else
+        {
+            BlueRC.mFeatures &= ~BlueRC.FEATURES_REVERSE2;
+        }
+        BlueRC.mCalibValues[BlueRC.CALIB_REVERSE2_HI] = mReverse2Forward.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_REVERSE2_MID] = mReverse2Stop.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_REVERSE2_LOW] = mReverse2Reverse.getProgress();
+
+        // Drain 1
+        if(mDrain1CkWidget.isChecked())
+        {
+            BlueRC.mFeatures |= BlueRC.FEATURES_DRAIN1;
+        }
+        else
+        {
+            BlueRC.mFeatures &= ~BlueRC.FEATURES_DRAIN1;
+        }
+        BlueRC.mCalibValues[BlueRC.CALIB_DRAIN1_HI] = mDrain1Open.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_DRAIN1_LOW] = mDrain1Closed.getProgress();
+
+        // Drain 2
+        if(mDrain2CkWidget.isChecked())
+        {
+            BlueRC.mFeatures |= BlueRC.FEATURES_DRAIN2;
+        }
+        else
+        {
+            BlueRC.mFeatures &= ~BlueRC.FEATURES_DRAIN2;
+        }
+        BlueRC.mCalibValues[BlueRC.CALIB_DRAIN2_HI] = mDrain2Open.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_DRAIN2_LOW] = mDrain2Closed.getProgress();
+
+        // Whistle
+        if(mWhistleCkWidget.isChecked())
+        {
+            BlueRC.mFeatures |= BlueRC.FEATURES_WHISTLE;
+        }
+        else
+        {
+            BlueRC.mFeatures &= ~BlueRC.FEATURES_WHISTLE;
+        }
+        BlueRC.mCalibValues[BlueRC.CALIB_WHISTLE_HI] = mWhistleOpen.getProgress();
+        BlueRC.mCalibValues[BlueRC.CALIB_WHISTLE_LOW] = mWhistleClosed.getProgress();
+    }
 }
