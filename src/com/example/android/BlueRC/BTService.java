@@ -39,7 +39,7 @@ public class BTService
 {
     // Debugging
     private static final String TAG = "BlueRC";
-    private static final boolean D = true;
+    private static final boolean D = false;
 
     // Unique UUID for this application
     private static final UUID MY_UUID_INSECURE =
@@ -225,7 +225,7 @@ public class BTService
         public void run()
         {
 
-            Log.i(TAG, "BEGIN mConnectThread ");
+            if (D) Log.i(TAG, "BEGIN mConnectThread ");
             setName("WorkerThread");
 
             // Always cancel discovery because it will slow down a connection
@@ -243,7 +243,7 @@ public class BTService
             }
             catch (IOException e)
             {
-                Log.e(TAG, "Exception while doing a .connect: ", e);
+                if (D) Log.e(TAG, "Exception while doing a .connect: ", e);
                 // Close the socket
                 try
                 {

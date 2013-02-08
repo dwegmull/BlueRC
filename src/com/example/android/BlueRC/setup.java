@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import org.apache.http.message.BasicLineFormatter;
 
 /*
  Setup activity.
@@ -221,6 +222,7 @@ public class setup extends Activity
         BlueRC.mCalibValues[BlueRC.CALIB_THROTTLE_HI] = mFullThrottleBar.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_THROTTLE_MID] = mMidThrottleBar.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_THROTTLE_LOW] = mClosedThrottleBar.getProgress();
+        BlueRC.mSafeThrottle = mClosedThrottleBar.getProgress();
 
         // Reverser 1
         if(mReverse1CkWidget.isChecked())
@@ -234,6 +236,7 @@ public class setup extends Activity
         BlueRC.mCalibValues[BlueRC.CALIB_REVERSE1_HI] = mReverse1Forward.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_REVERSE1_MID] = mReverse1Stop.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_REVERSE1_LOW] = mReverse1Reverse.getProgress();
+        BlueRC.mSafeReverse1 = mReverse1Stop.getProgress();
 
         // Reverser 2
         if(mReverse2CkWidget.isChecked())
@@ -247,6 +250,7 @@ public class setup extends Activity
         BlueRC.mCalibValues[BlueRC.CALIB_REVERSE2_HI] = mReverse2Forward.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_REVERSE2_MID] = mReverse2Stop.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_REVERSE2_LOW] = mReverse2Reverse.getProgress();
+        BlueRC.mSafeReverse2 = mReverse2Stop.getProgress();
 
         // Drain 1
         if(mDrain1CkWidget.isChecked())
@@ -259,6 +263,7 @@ public class setup extends Activity
         }
         BlueRC.mCalibValues[BlueRC.CALIB_DRAIN1_HI] = mDrain1Open.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_DRAIN1_LOW] = mDrain1Closed.getProgress();
+        BlueRC.mSafeDrain1 = mDrain1Open.getProgress();
 
         // Drain 2
         if(mDrain2CkWidget.isChecked())
@@ -271,6 +276,7 @@ public class setup extends Activity
         }
         BlueRC.mCalibValues[BlueRC.CALIB_DRAIN2_HI] = mDrain2Open.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_DRAIN2_LOW] = mDrain2Closed.getProgress();
+        BlueRC.mSafeDrain2 = mDrain2Open.getProgress();
 
         // Whistle
         if(mWhistleCkWidget.isChecked())
@@ -283,5 +289,6 @@ public class setup extends Activity
         }
         BlueRC.mCalibValues[BlueRC.CALIB_WHISTLE_HI] = mWhistleOpen.getProgress();
         BlueRC.mCalibValues[BlueRC.CALIB_WHISTLE_LOW] = mWhistleClosed.getProgress();
+        BlueRC.mSafeWhistle = mWhistleClosed.getProgress();
     }
 }

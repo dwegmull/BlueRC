@@ -117,7 +117,7 @@ public class BlueRC extends Activity
 
     // Debugging
     private static final String TAG = "BlueRC";
-    private static final boolean D = true;
+    private static final boolean D = false;
 
     // Message types sent from the BTService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
@@ -182,12 +182,12 @@ public class BlueRC extends Activity
     public static int mTimeout = 0x00; // No timeout for now, while debugging
 
     // Safe Values
-    private int mSafeThrottle;
-    private int mSafeReverse1;
-    private int mSafeReverse2;
-    private int mSafeDrain1;
-    private int mSafeDrain2;
-    private int mSafeWhistle;
+    public static int mSafeThrottle;
+    public static int mSafeReverse1;
+    public static int mSafeReverse2;
+    public static int mSafeDrain1;
+    public static int mSafeDrain2;
+    public static int mSafeWhistle;
     private String mSafeData = new String();
 
     private static boolean mWarnOnNoConnection = true;
@@ -327,12 +327,12 @@ public class BlueRC extends Activity
         mSetupButton = (Button)findViewById(R.id.button_setup);
         super.onResume();
         if (D) Log.e(TAG, "+ ON RESUME +");
-
+        mWaitingForAck = false;
     }
 
     private void setupLink()
     {
-        Log.d(TAG, "setupLink()");
+        if (D) Log.d(TAG, "setupLink()");
 
         // Initialize the seek bar variables
         mThrottleBar = (SeekBar) findViewById(R.id.seekBar_Throttle);
@@ -347,6 +347,7 @@ public class BlueRC extends Activity
     {
         super.onPause();
         if (D) Log.e(TAG, "- ON PAUSE -");
+        setSafe();
     }
 
     @Override
@@ -399,6 +400,14 @@ public class BlueRC extends Activity
         char buff[] = new char[3];
 
         mCalibrationData.getChars(register, register + 2, buff, 0);
+        return (ascii2Digit(buff[0]) << 4) + (ascii2Digit(buff[1]));
+    }
+
+    public int safe2Value(int register)
+    {
+        char buff[] = new char[3];
+
+        mSafeData.getChars(register, register + 2, buff, 0);
         return (ascii2Digit(buff[0]) << 4) + (ascii2Digit(buff[1]));
     }
 
@@ -482,6 +491,7 @@ public class BlueRC extends Activity
         // we can only send if there is not another transaction in progress
         if(false == mWaitingForAck)
         {
+            if (D) Log.i(TAG, "message Tx.");
             // Check that there's actually something to send
             if (message.length() > 0)
             {
@@ -517,6 +527,7 @@ public class BlueRC extends Activity
         }
         else
         {
+            if (D) Log.i(TAG, "message Queue.");
             // We can't send right now: put the current message in the queue
             // If the message we want to send is a servo value, check if other values for the same channel are
             // already in the queue: if so replace them with the new value
@@ -573,6 +584,14 @@ public class BlueRC extends Activity
         mSafeData = message;
     }
 
+    private void setSafe()
+    {
+        buildSafeString();
+        String setMessage = mSafeData;
+        setMessage = setMessage.replace("@C1B","@C00");
+        sendMessageRc(setMessage);
+    }
+
     private String buildNameString()
     {
         String message = new String();
@@ -605,12 +624,12 @@ public class BlueRC extends Activity
 
     private void updateSafeValues()
     {
-        mSafeThrottle = calib2Value(REG_SAFE_THROTTLE_HI);
-        mSafeReverse1 = calib2Value(REG_SAFE_REVERSE1_HI);
-        mSafeReverse2 = calib2Value(REG_SAFE_REVERSE2_HI);
-        mSafeDrain1 = calib2Value(REG_SAFE_DRAIN1_HI);
-        mSafeDrain2 = calib2Value(REG_SAFE_DRAIN2_HI);
-        mSafeWhistle = calib2Value(REG_SAFE_WHISTLE_HI);
+        mSafeThrottle = safe2Value(REG_SAFE_THROTTLE_HI);
+        mSafeReverse1 = safe2Value(REG_SAFE_REVERSE1_HI);
+        mSafeReverse2 = safe2Value(REG_SAFE_REVERSE2_HI);
+        mSafeDrain1 = safe2Value(REG_SAFE_DRAIN1_HI);
+        mSafeDrain2 = safe2Value(REG_SAFE_DRAIN2_HI);
+        mSafeWhistle = safe2Value(REG_SAFE_WHISTLE_HI);
     }
 
     // Decodes messages coming from the locomotive.
@@ -792,7 +811,7 @@ public class BlueRC extends Activity
                 else
                 {
                     // User did not enable Bluetooth or an error occurred
-                    Log.d(TAG, "BT not enabled");
+                    if (D) Log.d(TAG, "BT not enabled");
                     Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -800,7 +819,6 @@ public class BlueRC extends Activity
                 // Save the calibration data to the device's EEPROM.
                 buildCalibrationString();
                 sendMessageRc(mCalibrationData);
-                updateSafeValues();
                 buildSafeString();
                 sendMessageRc(mSafeData);
                 sendMessageRc(buildNameString());
