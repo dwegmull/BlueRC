@@ -58,7 +58,8 @@ public class setup extends Activity
         Bundle b = getIntent().getExtras();
 
         mCalibrationData = b.getString(BlueRC.EXTRA_MESSAGE);
-
+        mLocomotiveName = (TextView)findViewById(R.id.text_name);
+        mLocomotiveName.setText(BlueRC.mLocomotiveName);
         // Set all the widget contents based on the calibration data
         mTimeoutWidget = (TextView)findViewById(R.id.text_timeout);
         mTimeoutWidget.setText(String.format("%d",BlueRC.calib2Value(BlueRC.REG_DISC_TIMEOUT_HI)));
@@ -201,10 +202,12 @@ public class setup extends Activity
     };
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         // Before we go back to the main page, update all the calibration variables
         BlueRC.mTimeout = Integer.parseInt(mTimeoutWidget.getText().toString());
+        // Name
+        BlueRC.mLocomotiveName = mLocomotiveName.getText().toString();
 
         // Throttle
         if(mThrottleCkWidget.isChecked())

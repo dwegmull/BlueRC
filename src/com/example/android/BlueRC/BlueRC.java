@@ -194,7 +194,7 @@ public class BlueRC extends Activity
     private static boolean mWaitingForAck = false;
 
     // Locomotive name
-    public String mLocomotiveName = new String();
+    public static String mLocomotiveName = new String();
     public int mNameLength;
 
     private void default_calibration()
@@ -217,7 +217,7 @@ public class BlueRC extends Activity
     }
 
     // Button availability flags
-    private boolean setupButtonActive = false;
+    private static boolean setupButtonActive = false;
     private boolean connectButtonActive = true;
 
     // Message queue
@@ -440,26 +440,26 @@ public class BlueRC extends Activity
     // Calibration for axes that have just an upper and lower limit
     private int Calibrate(int value, int lowLimit, int highLimit)
     {
-        return doCalibration(value, lowLimit, highLimit, 180);
+        return doCalibration(value, lowLimit, highLimit, 255);
     }
 
     // Calibration for axes with a center value in addition to the lower and upper limits
     private int Calibrate(int value, int lowLimit, int midLimit, int highLimit)
     {
         // Check which side of the center is the value on
-        if(value == 90)
+        if(value == 127)
         {
             return midLimit;
         }
-        if(value < 90)
+        if(value < 127)
         {
             // We need to produce a value between lowLimit and midLimit
-            return doCalibration(value, lowLimit, midLimit, 90);
+            return doCalibration(value, lowLimit, midLimit, 127);
         }
         else
         {
             // We need to produce a value between midLimit and highLimit
-            return doCalibration(value - 90, midLimit, highLimit, 90);
+            return doCalibration(value - 127, midLimit, highLimit, 127);
         }
     }
 
@@ -469,6 +469,8 @@ public class BlueRC extends Activity
      */
     public static void sendMessageRc(String message)
     {
+        if (D) Log.i(TAG, "message Tx: " + message);
+
         // Check that we're actually connected before trying anything
         if ((mBTservice.getState() != BTService.STATE_CONNECTED) && mWarnOnNoConnection)
         {
@@ -489,7 +491,7 @@ public class BlueRC extends Activity
                 message = mTxQueue.remove();
                 if (!message.contentEquals("$$$"))
                 {
-                    message = message.concat("\n");
+                    message = message.concat("\r");
                 }
                 // Get the message bytes and tell the BTService to write
                 byte[] send = message.getBytes();
@@ -504,7 +506,7 @@ public class BlueRC extends Activity
                     message = mTxQueue.remove();
                     if (!message.contentEquals("$$$"))
                     {
-                        message = message.concat("\n");
+                        message = message.concat("\r");
                     }
                     // Get the message bytes and tell the BTService to write
                     byte[] send = message.getBytes();
@@ -519,7 +521,7 @@ public class BlueRC extends Activity
             // If the message we want to send is a servo value, check if other values for the same channel are
             // already in the queue: if so replace them with the new value
             String Reg = message.substring(1, 6);
-            if(Reg.contains("C0001"))
+            if(Reg.contains("C00") || Reg.contains("C01") || Reg.contains("C02") || Reg.contains("C03") || Reg.contains("C04") || Reg.contains("C05"))
             {
                 for(int i = 0; i < mTxQueue.size(); i++)
                 {
@@ -544,9 +546,8 @@ public class BlueRC extends Activity
     private void buildCalibrationString()
     {
         String message = new String();
-        mEEPROMValid = 0x42;
         message = "@C0611";
-        message = message.concat(int2String(mEEPROMValid));
+        message = message.concat(int2String(0x42));
         message = message.concat(int2String(mFeatures));
         int loopCt;
         for(loopCt = 0; loopCt < 15; loopCt++)
@@ -576,26 +577,40 @@ public class BlueRC extends Activity
     {
         String message = new String();
         message = "@C21";
-        if(0 == mNameLength)
+        if(0 == mLocomotiveName.length())
         {
             // A blank name confuses the receiver firmware
-            message = message.concat("01 ");
+            message = message.concat("0201W");
         }
         else
         {
-            if(mNameLength < (255 - 0x21))
+            if(mLocomotiveName.length() < 16)
             {
-                message = message.concat(int2String(mNameLength));
+                // The packet data length is the string length plus one
+                message = message.concat(int2String(mLocomotiveName.length() + 1));
+                // The first register sent contains the string length
+                message = message.concat(int2String(mLocomotiveName.length()));
+                // The rest of the data is the string
                 message = message.concat(mLocomotiveName);
             }
             else
             {
-                message = message.concat("DE");
-                message = message.concat(mLocomotiveName.substring(0, 0xDD));
+                message = message.concat("1110");
+                message = message.concat(mLocomotiveName.substring(0, 16));
             }
         }
         message = message.concat("!");
         return message;
+    }
+
+    private void updateSafeValues()
+    {
+        mSafeThrottle = calib2Value(REG_SAFE_THROTTLE_HI);
+        mSafeReverse1 = calib2Value(REG_SAFE_REVERSE1_HI);
+        mSafeReverse2 = calib2Value(REG_SAFE_REVERSE2_HI);
+        mSafeDrain1 = calib2Value(REG_SAFE_DRAIN1_HI);
+        mSafeDrain2 = calib2Value(REG_SAFE_DRAIN2_HI);
+        mSafeWhistle = calib2Value(REG_SAFE_WHISTLE_HI);
     }
 
     // Decodes messages coming from the locomotive.
@@ -606,7 +621,6 @@ public class BlueRC extends Activity
 
 //        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
 //        toast.show();
-        if (D) Log.i(TAG, "decode message: " + message);
         if (message.contains("#A0612"))
         {
             // This message contains the calibration data
@@ -630,9 +644,6 @@ public class BlueRC extends Activity
                 default_calibration();
                 buildCalibrationString();
             }
-            // Now we allow the user to go into the setup
-            setupButtonActive = true;
-            if (D) Log.i(TAG, "Setup button enabled ");
 
         }
 
@@ -650,13 +661,8 @@ public class BlueRC extends Activity
             // only trust them if the EEPROM is valid
             if(0x42 == mEEPROMValid)
             {
-                mCalibrationData = message;
-                mSafeThrottle = calib2Value(REG_SAFE_THROTTLE_HI);
-                mSafeReverse1 = calib2Value(REG_SAFE_REVERSE1_HI);
-                mSafeReverse2 = calib2Value(REG_SAFE_REVERSE2_HI);
-                mSafeDrain1 = calib2Value(REG_SAFE_DRAIN1_HI);
-                mSafeDrain2 = calib2Value(REG_SAFE_DRAIN2_HI);
-                mSafeWhistle = calib2Value(REG_SAFE_WHISTLE_HI);
+                mSafeData = message;
+                updateSafeValues();
             }
             else
             {
@@ -673,8 +679,18 @@ public class BlueRC extends Activity
 
         if(message.contains("#A21"))
         {
+            if(0x42 == mEEPROMValid)
+            {
             // This message contains the name string
-            mLocomotiveName = message.substring(6, 6 + string2Value(message, 4));
+                mLocomotiveName = message.substring(8, 8 + string2Value(message, 6));
+            }
+            else
+            {
+                mLocomotiveName = "Name";
+            }
+            // Now we allow the user to go into the setup
+            setupButtonActive = true;
+            if (D) Log.i(TAG, "Setup button enabled ");
         }
     }
 
@@ -708,6 +724,7 @@ public class BlueRC extends Activity
                                 connectButtonActive = true;
                                 mThrottleBar.setProgress(0);
                                 mWhistleBar.setProgress(0);
+                                mEEPROMValid = 0x00;
                                 break;
                             case BTService.STATE_CONNECTING:
                             case BTService.STATE_NONE:
@@ -783,9 +800,11 @@ public class BlueRC extends Activity
                 // Save the calibration data to the device's EEPROM.
                 buildCalibrationString();
                 sendMessageRc(mCalibrationData);
+                updateSafeValues();
                 buildSafeString();
                 sendMessageRc(mSafeData);
                 sendMessageRc(buildNameString());
+                mEEPROMValid = 0x42;
         }
     }
 
@@ -808,6 +827,7 @@ public class BlueRC extends Activity
 
     public void OnSetupButtonClick(View view)
     {
+        if (D) Log.i(TAG, "Setup clicked");
         if(true == setupButtonActive)
         {
             // Make sure the calibration string is valid
@@ -816,6 +836,7 @@ public class BlueRC extends Activity
             Intent serverIntent = new Intent(this, setup.class);
             serverIntent.putExtra(EXTRA_MESSAGE, mCalibrationData);
             startActivityForResult(serverIntent, SAVE_SETUP);
+            if (D) Log.i(TAG, "Setup launched");
         }
     }
 

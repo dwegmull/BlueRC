@@ -112,13 +112,13 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBar_whistle"
                     android:layout_gravity="center_horizontal"
-                    android:max="180"
+                    android:max="255"
                     />
         </LinearLayout>
         <android.widget.VerticalSeekBar
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:max="180"
+                android:max="255"
                 android:id="@+id/seekBar_Throttle"
                 android:paddingTop="100dp"
                 />
