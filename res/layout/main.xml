@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+     >
+        <android.widget.Button android:id="@+id/button_connect"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/connect"
+            android:onClick="OnConnectButtonClick"
+        />
+        <android.widget.Button android:id="@+id/button_setup"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/setup"
+                android:onClick="OnSetupButtonClick"
+        />
+
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginBottom="20dp"
+            >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
+        >
+            <android.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jbar"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    />
+
+            <android.widget.RadioGroup
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_horizontal"
+                    >
+                <RadioButton android:id="@+id/radio_forward"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="@string/forward"
+                             android:onClick="OnSetReverserForward"
+                />
+                <RadioButton android:id="@+id/radio_stop"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="@string/stop"
+                             android:onClick="OnSetReverserStop"
+                />
+                <RadioButton android:id="@+id/radio_reverse"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="@string/reverse"
+                             android:onClick="OnSetReverserReverse"
+                 />
+            </android.widget.RadioGroup>
+            <android.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cocks"
+                    android:layout_marginTop="50dp"
+                    android:layout_gravity="center_horizontal"
+                    />
+            <android.widget.ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOn="@string/cocksOn"
+                    android:textOff="@string/cocksOff"
+                    android:onClick="OnDrainCocks"
+                    android:layout_gravity="center_horizontal"
+                    />
+            <android.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/whistle"
+                    android:layout_marginTop="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/text_whistle"
+                    />
+            <android.widget.SeekBar
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seekBar_whistle"
+                    android:layout_gravity="center_horizontal"
+                    android:max="255"
+                    />
+        </LinearLayout>
+        <android.widget.VerticalSeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:max="255"
+                android:id="@+id/seekBar_Throttle"
+                android:paddingTop="100dp"
+                />
+    </LinearLayout>
+    <android.widget.Button
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/emergency"
+            />
+</LinearLayout>
