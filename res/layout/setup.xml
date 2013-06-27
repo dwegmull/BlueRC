@@ -80,7 +80,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_full_throttle"
@@ -97,7 +97,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_mid_throttle"
@@ -114,7 +114,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_closed_throttle"
@@ -154,7 +154,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_forward1"
@@ -171,7 +171,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_stop1"
@@ -188,7 +188,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_reverse1"
@@ -228,7 +228,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_forward2"
@@ -245,7 +245,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_stop2"
@@ -262,7 +262,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_reverse2"
@@ -302,7 +302,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_drain_on1"
@@ -319,7 +319,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_drain_off1"
@@ -359,7 +359,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_drain_on2"
@@ -376,7 +376,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_drain_off2"
@@ -416,7 +416,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_whistle_on"
@@ -433,7 +433,7 @@
                     android:layout_column="0"
                     />
             <android.widget.SeekBar
-                    android:max="180"
+                    android:max="255"
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:id="@+id/seek_whistle_off"
