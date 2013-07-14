@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wegmuller.android.BlueRC;
+package com.wegmuller.android.BluRC;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import android.util.Log;
 public class BTService
 {
     // Debugging
-    private static final String TAG = "BlueRC";
+    private static final String TAG = "BluRC";
     private static final boolean D = false;
 
     // Unique UUID for this application
@@ -61,7 +61,7 @@ public class BTService
 
 
     /**
-     * Constructor. Prepares a new BlueRC session.
+     * Constructor. Prepares a new BluRC session.
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */

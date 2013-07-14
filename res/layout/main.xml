@@ -115,7 +115,7 @@
                     android:max="255"
                     />
         </LinearLayout>
-        <android.widget.VerticalSeekBar
+        <com.wegmuller.android.BluRC.VerticalSeekBar
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:max="255"

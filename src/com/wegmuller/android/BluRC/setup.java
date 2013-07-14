@@ -1,4 +1,4 @@
-package com.wegmuller.android.BlueRC;
+package com.wegmuller.android.BluRC;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 /*
  Setup activity.
- It is started by BlueRC when the user clicks on the setup button
+ It is started by BluRC when the user clicks on the setup button
  It allows the user to adjust the set points of the servos and to
  set other global parameters
 */

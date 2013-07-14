@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.BlueRC;
+package com.wegmuller.android.BluRC;
 
 import java.util.Set;
 

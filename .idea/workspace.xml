@@ -25,11 +25,6 @@
   <component name="AndroidLayoutPreviewToolWindow">
     <option name="state">
       <GlobalState>
-        <option name="device" value="2.7in QVGA" />
-        <option name="dockMode" value="" />
-        <option name="nightMode" value="notnight" />
-        <option name="targetHashString" value="android-16" />
-        <option name="theme" value="Theme" />
         <option name="visible" value="false" />
       </GlobalState>
     </option>
@@ -45,14 +40,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3c3b050e-fe87-4bce-8ef5-e14ea53f3ead" name="Default" comment="Started morphing the code into Blue RC&#10;&#10;So far it is broken!">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/BTService.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/DeviceListActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/VerticalSeekBar.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable/app_icon.png" afterPath="$PROJECT_DIR$/res/drawable/app_icon.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-hdpi/app_icon.png" afterPath="$PROJECT_DIR$/res/drawable-hdpi/app_icon.png" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/com/wegmuller/android/BlueRC/BuildConfig.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/com/wegmuller/android/BlueRC/Manifest.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/gen/com/wegmuller/android/BlueRC/R.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/BTService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/DeviceListActivity.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/VerticalSeekBar.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/setup.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/DeviceListActivity.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/VerticalSeekBar.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java" afterPath="$PROJECT_DIR$/src/com/wegmuller/android/BluRC/BluRC.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/DeviceListActivity.java" afterPath="$PROJECT_DIR$/src/com/wegmuller/android/BluRC/DeviceListActivity.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/example/android/BlueRC/VerticalSeekBar.java" afterPath="$PROJECT_DIR$/src/com/wegmuller/android/BluRC/VerticalSeekBar.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BTService.java" afterPath="$PROJECT_DIR$/src/com/wegmuller/android/BluRC/BTService.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/setup.java" afterPath="$PROJECT_DIR$/src/com/wegmuller/android/BluRC/setup.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/main.xml" afterPath="$PROJECT_DIR$/res/layout/main.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Blue RC.iws" />
@@ -79,7 +85,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <breakpoint_any>
+    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
         <option name="NOTIFY_UNCAUGHT" value="true" />
@@ -91,7 +97,7 @@
         <option name="SUSPEND" value="true" />
         <option name="COUNT_FILTER_ENABLED" value="false" />
         <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CONDITION_ENABLED" value="false" />
         <option name="CLASS_FILTERS_ENABLED" value="false" />
         <option name="INSTANCE_FILTERS_ENABLED" value="false" />
         <option name="CONDITION" value="" />
@@ -108,13 +114,15 @@
         <option name="SUSPEND" value="true" />
         <option name="COUNT_FILTER_ENABLED" value="false" />
         <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CONDITION_ENABLED" value="false" />
         <option name="CLASS_FILTERS_ENABLED" value="false" />
         <option name="INSTANCE_FILTERS_ENABLED" value="false" />
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -130,43 +138,60 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="120" column="32" selection-start="5401" selection-end="5401" vertical-scroll-proportion="0.0" vertical-offset="1785" max-vertical-offset="2055">
+            <state line="120" column="32" selection-start="5414" selection-end="5414" vertical-scroll-proportion="-62.068966" vertical-offset="0" max-vertical-offset="2055">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BlueRC.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BlueRC.java">
+      <file leaf-file-name="custom_title.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/layout/custom_title.xml">
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state line="875" column="27" selection-start="32166" selection-end="32166" vertical-scroll-proportion="0.37163562" vertical-offset="12346" max-vertical-offset="13350">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="660">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BluRC.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/BluRC.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="39" column="22" selection-start="1229" selection-end="1229" vertical-scroll-proportion="0.17080745" vertical-offset="0" max-vertical-offset="13350">
+              <folding>
+                <element signature="e#9105#9113#0" expanded="true" />
+                <element signature="e#25333#28862#0" expanded="true" />
+                <element signature="e#28851#28852#0" expanded="true" />
+                <element signature="e#29941#29945#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="BTService.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BTService.java">
+        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/BTService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="21" selection-start="790" selection-end="790" vertical-scroll-proportion="0.0" vertical-offset="330" max-vertical-offset="5640">
+            <state line="37" column="13" selection-start="1258" selection-end="1258" vertical-scroll-proportion="0.0" vertical-offset="585" max-vertical-offset="5250">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="DeviceListActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/DeviceListActivity.java">
+        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/DeviceListActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="64" column="24" selection-start="2250" selection-end="2250" vertical-scroll-proportion="0.0" vertical-offset="945" max-vertical-offset="3120">
+            <state line="64" column="24" selection-start="2249" selection-end="2249" vertical-scroll-proportion="0.0" vertical-offset="945" max-vertical-offset="3120">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="setup.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/setup.java">
+        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/setup.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="233" column="45" selection-start="10643" selection-end="10660" vertical-scroll-proportion="0.0" vertical-offset="3480" max-vertical-offset="4470">
+            <state line="233" column="45" selection-start="10641" selection-end="10658" vertical-scroll-proportion="0.0" vertical-offset="3480" max-vertical-offset="4470">
               <folding />
             </state>
           </provider>
@@ -182,9 +207,9 @@
         </entry>
       </file>
       <file leaf-file-name="VerticalSeekBar.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/VerticalSeekBar.java">
+        <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/VerticalSeekBar.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="13" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="945">
+            <state line="8" column="13" selection-start="214" selection-end="214" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="960">
               <folding />
             </state>
           </provider>
@@ -193,7 +218,7 @@
       <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="32" selection-start="844" selection-end="844" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="780">
+            <state line="25" column="36" selection-start="1172" selection-end="1172" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="780">
               <folding />
             </state>
           </provider>
@@ -236,7 +261,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/res/menu/option_menu.xml" />
         <option value="$PROJECT_DIR$/src/com/example/android/BlueRC/VerticalSeekBar.java" />
         <option value="$PROJECT_DIR$/res/layout/general-setup.xml" />
         <option value="$PROJECT_DIR$/src/com/example/android/BlueRC/FragmentPagerSupport.java" />
@@ -249,9 +273,10 @@
         <option value="$PROJECT_DIR$/src/com/example/android/BlueRC/BlueRC.java" />
         <option value="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BTService.java" />
         <option value="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/DeviceListActivity.java" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/setup.java" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BlueRC.java" />
+        <option value="$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BluRC.java" />
       </list>
     </option>
   </component>
@@ -321,6 +346,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Blue_rc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Blue_rc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Blue_rc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="BluRC" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -597,6 +640,9 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26603934" sideWeight="0.60273975" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26518393" sideWeight="0.60273975" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33560476" sideWeight="0.79619855" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1813677" sideWeight="0.6973466" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34387353" sideWeight="0.5439469" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32905138" sideWeight="0.39220563" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -608,16 +654,13 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.188744" sideWeight="0.4751848" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39948675" sideWeight="0.79908675" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22462562" sideWeight="0.800813" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22462562" sideWeight="0.8186323" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19821605" sideWeight="0.7321725" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32944405" sideWeight="0.79619855" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33560476" sideWeight="0.79619855" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18226601" sideWeight="0.6973466" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3270751" sideWeight="0.49170813" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -688,13 +731,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/VerticalSeekBar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="32" selection-start="846" selection-end="846" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
@@ -727,26 +763,9 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BTService.java">
+    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/VerticalSeekBar.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="21" selection-start="790" selection-end="790" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/VerticalSeekBar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="170" selection-end="170" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="32" selection-start="5401" selection-end="5401" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
+        <state line="8" column="13" selection-start="214" selection-end="214" vertical-scroll-proportion="0.0" vertical-offset="105" max-vertical-offset="960">
           <folding />
         </state>
       </provider>
@@ -768,31 +787,63 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-1.0453808" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/DeviceListActivity.java">
+    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/DeviceListActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="24" selection-start="2250" selection-end="2250" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
+        <state line="64" column="24" selection-start="2249" selection-end="2249" vertical-scroll-proportion="0.0" vertical-offset="945" max-vertical-offset="3120">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/setup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="233" column="45" selection-start="10641" selection-end="10658" vertical-scroll-proportion="0.0" vertical-offset="3480" max-vertical-offset="4470">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/BTService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="13" selection-start="1258" selection-end="1258" vertical-scroll-proportion="0.0" vertical-offset="585" max-vertical-offset="5250">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="120" column="32" selection-start="5414" selection-end="5414" vertical-scroll-proportion="-62.068966" vertical-offset="0" max-vertical-offset="2055">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/custom_title.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="950">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="32" selection-start="844" selection-end="844" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="780">
+        <state line="25" column="36" selection-start="1172" selection-end="1172" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="780">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/setup.java">
+    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BluRC/BluRC.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="233" column="45" selection-start="10643" selection-end="10660" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/wegmuller/android/BlueRC/BlueRC.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="875" column="27" selection-start="32166" selection-end="32166" vertical-scroll-proportion="0.37163562" vertical-offset="12346" max-vertical-offset="13350">
-          <folding />
+        <state line="39" column="22" selection-start="1229" selection-end="1229" vertical-scroll-proportion="0.17080745" vertical-offset="0" max-vertical-offset="13350">
+          <folding>
+            <element signature="e#9105#9113#0" expanded="true" />
+            <element signature="e#25333#28862#0" expanded="true" />
+            <element signature="e#28851#28852#0" expanded="true" />
+            <element signature="e#29941#29945#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

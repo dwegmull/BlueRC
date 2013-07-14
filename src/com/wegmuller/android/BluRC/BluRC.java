@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wegmuller.android.BlueRC;
+package com.wegmuller.android.BluRC;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -35,7 +35,7 @@ import static java.lang.Thread.sleep;
 /**
  * This is the main Activity that displays the current chat session.
  */
-public class BlueRC extends Activity
+public class BluRC extends Activity
 {
     // Servo registers
     public static final int  REG_THROTTLE    =    0;
@@ -113,10 +113,10 @@ public class BlueRC extends Activity
     public static final int  REG_DESCRIPTION_LO   =  63;
 
     // Message sent to the setup activity
-    public final static String EXTRA_MESSAGE = "com.example.android.BlueRC.MESSAGE";
+    public final static String EXTRA_MESSAGE = "com.example.android.BluRC.MESSAGE";
 
     // Debugging
-    private static final String TAG = "BlueRC";
+    private static final String TAG = "BluRC";
     private static final boolean D = false;
 
     // Message types sent from the BTService Handler
